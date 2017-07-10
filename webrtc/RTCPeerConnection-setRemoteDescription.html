@@ -61,7 +61,7 @@
     return generateOffer({ data: true })
     .then(offer =>
       pc.setRemoteDescription(offer)
-      .then(offer => {
+      .then(() => {
         assert_equals(pc.signalingState, 'have-remote-offer');
         assert_session_desc_equals(pc.remoteDescription, offer);
         assert_session_desc_equals(pc.pendingRemoteDescription, offer);
@@ -295,6 +295,36 @@
       promise_rejects(t, 'InvalidStateError',
         pc.setRemoteDescription(offer)));
   }, 'Calling setRemoteDescription(offer) from have-local-offer state should reject with InvalidStateError');
+
+  /*
+    4.3.1.6.  Set the RTCSessionSessionDescription
+      2.2.3.  Otherwise, if description is set as a remote description, then run one
+              of the following steps:
+        - If description is of type "rollback", then this is a rollback.
+          Set connection.pendingRemoteDescription to null and signaling state to stable.
+   */
+  promise_test(t => {
+    const pc = new RTCPeerConnection();
+
+    test_state_change_event(t, pc, ['have-remote-offer', 'stable']);
+
+    return generateOffer({ data: true })
+    .then(offer => pc.setRemoteDescription(offer))
+    .then(() => {
+      assert_equals(pc.signalingState, 'have-remote-offer');
+      assert_not_equals(pc.remoteDescription, null);
+      assert_not_equals(pc.pendingRemoteDescription, null);
+      assert_equals(pc.currentRemoteDescription, null);
+
+      return pc.setRemoteDescription({ type: 'rollback' });
+    })
+    .then(() => {
+      assert_equals(pc.signalingState, 'stable');
+      assert_equals(pc.remoteDescription, null);
+      assert_equals(pc.pendingRemoteDescription, null);
+      assert_equals(pc.currentRemoteDescription, null);
+    });
+  }, 'setRemoteDescription(rollback) in have-remote-offer state should revert to stable state');
 
   /*
     TODO
