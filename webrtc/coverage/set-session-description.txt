@@ -71,11 +71,11 @@ https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
           Set both pendingRemoteDescription and pendingLocalDescription to null.
           Finally set connection's signaling state to stable
 
-        [TODO RTCPeerConnection-setLocalDescription-rollback]
+        [RTCPeerConnection-setLocalDescription-rollback]
         - If description is of type "rollback", then this is a rollback. Set
           connection.pendingLocalDescription to null and signaling state to stable.
 
-        [TODO RTCPeerConnection-setLocalDescription-pranswer]
+        [RTCPeerConnection-setLocalDescription-pranswer]
         - If description is of type "pranswer", then set
           connection.pendingLocalDescription to description and signaling state to
           have-local-pranswer.
@@ -99,11 +99,11 @@ https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
 
         Finally setconnection's signaling state to stable
 
-      [TODO RTCPeerConnection-setRemoteDescription-rollback]
+      [RTCPeerConnection-setRemoteDescription-rollback]
       - If description is of type "rollback", then this is a rollback.
         Set connection.pendingRemoteDescription to null and signaling state to stable.
 
-      [TODO RTCPeerConnection-setRemoteDescription-rollback]
+      [RTCPeerConnection-setRemoteDescription-rollback]
       - If description is of type "pranswer", then set
         connection.pendingRemoteDescription to description and signaling state
         to have-remote-pranswer.
@@ -238,7 +238,7 @@ https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
 
 Coverage Report
 
-  Tested        28
-  Not Tested    22
+  Tested        32
+  Not Tested    18
   Untestable     8
   Total         58
