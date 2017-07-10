@@ -61,7 +61,7 @@
     return generateOffer({ data: true })
     .then(offer =>
       pc.setRemoteDescription(offer)
-      .then(offer => {
+      .then(() => {
         assert_equals(pc.signalingState, 'have-remote-offer');
         assert_session_desc_equals(pc.remoteDescription, offer);
         assert_session_desc_equals(pc.pendingRemoteDescription, offer);
