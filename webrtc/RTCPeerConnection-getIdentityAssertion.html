@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>RTCPeerConnection.prototype.getIdentityAsssertion</title>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script>
+  'use strict';
+
+  // Test is based on the following editor draft:
+  // https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
+
+  /*
+    9.6.  RTCPeerConnection Interface Extensions
+      partial interface RTCPeerConnection {
+        void               setIdentityProvider(DOMString provider,
+                                               optional RTCIdentityProviderOptions options);
+        Promise<DOMString> getIdentityAssertion();
+      };
+
+      dictionary RTCIdentityProviderOptions {
+        DOMString protocol = "default";
+        DOMString usernameHint;
+        DOMString peerIdentity;
+      };
+   */
+
+  const host = window.location.host;
+  const domain = window.location.hostname;
+
+  const alice = `alice@${domain}`;
+  const bob = `bob@${domain}`;
+
+  promise_test(() => {
+    const pc = new RTCPeerConnection();
+    pc.setIdentityProvider(host, {
+      protocol: 'idp-test.js?foo=bar',
+      usernameHint: alice,
+      peerIdentity: bob
+    });
+
+    return pc.getIdentityAssertion()
+    .then(assertionStr => {
+      const assertion = JSON.parse(assertionStr);
+
+      const {
+        watermark, location,
+        options, testOptions,
+        contents, origin,
+      } = assertion;
+
+      assert_equals(watermark, 'asserted by idp-test.js',
+        'Expect watermark to be left by idp-test.js');
+
+      assert_equals(origin, window.origin);
+      assert_equals(location, `https://${host}/.well-known/idp-proxy/idp-test.js`);
+
+      assert_equals(options.protocol, 'idp-test.js?foo=bar');
+      assert_equals(options.usernameHint, alice);
+      assert_equals(options.peerIdentity, bob);
+      assert_equals(testOptions.foo, 'bar');
+    });
+  }, 'getIdentityAssertion() should load identity proxy and return assertion generated');
+
+</script>
