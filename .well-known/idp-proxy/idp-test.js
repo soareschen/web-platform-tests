@@ -1,7 +1,22 @@
 'use strict'
 
-const testOptions = getTestOptions(location);
+/*
+  The test identity provider is a naive IdP that provides
+  absolutely no security for authentication. It can generate
+  identity assertion for whatever identity that is requested.
+  It validates identity assertion by simply decoding the JSON
+  and return whatever that is inside, with no integrity
+  protection and thus can be spoofed by anyone.
 
+  While being not practical at all, the test IdP allows us
+  to test various aspects of the identity API and allow tests
+  to manipulate the IdP at will.
+ */
+
+// We pass around test options as query string to instruct
+// the test IdP proxy script on what actions to perform.
+// This hack is based on the fact that query string is allowed
+// when specifying the IdP protocol.
 function getTestOptions(urlStr) {
   const url = new URL(urlStr);
   const result = {};
@@ -35,16 +50,23 @@ function getTestOptions(urlStr) {
     };
  */
 function generateAssertion(contents, origin, options) {
+  const idpOrigin = self.origin;
+  const location = self.location;
+  const { host } = location;
+  const testOptions = getTestOptions(location);
+
   const assertion = {
     watermark: 'asserted by idp-test.js',
-    location, testOptions,
+    location,
+    idpOrigin,
+    testOptions,
     contents, origin, options
   }
 
   const assertionStr = JSON.stringify(assertion);
 
   const idpDetails = {
-    domain: window.location.hostname,
+    domain: host,
     protocol: 'idp-test.js'
   }
 
@@ -70,12 +92,31 @@ function validateAssertion(assertionStr, origin) {
 
   const {
     contents,
-    testOptions: { username='unknown' }
+    options,
+    testOptions
   } = assertion;
 
-  return {
-    identity: `${username}@${origin}`,
-    contents
+  const {
+    usernameHint=`unknown@${self.location.hostname}`
+  } = options;
+
+  // The test options may specify what value to return
+  // for the identity and contents fields. If unspecified,
+  // the usernameHint and the original contents is returned
+  const {
+    action,
+    returnIdentity=usernameHint,
+    returnContents=contents
+  } = testOptions;
+
+  if(action === 'validate-throw-error') {
+    throw new Error('Mock Internal IdP Error');
+
+  } else {
+    return {
+      identity: returnIdentity,
+      contents: returnContents
+    }
   }
 }
 
