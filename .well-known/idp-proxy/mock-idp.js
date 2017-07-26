@@ -17,7 +17,7 @@
 // the test IdP proxy script on what actions to perform.
 // This hack is based on the fact that query string is allowed
 // when specifying the IdP protocol.
-function getTestOptions(urlStr) {
+function parseQueryString(urlStr) {
   const url = new URL(urlStr);
   const result = {};
   for(const [key, value] of url.searchParams.entries()) {
@@ -49,30 +49,76 @@ function getTestOptions(urlStr) {
                DOMString protocol = "default";
     };
  */
+
+// In RTCIdentityProviderGlobalScope, global is self,
+// In regular JS, global is window
+const global = self || window;
+const query = parseQueryString(global.location);
+
+// Generate a naive identity assertion. The result assertion
+// is a JSON string that report the various parameters
+// received by this function.
+//   watermark - a special mark to make sure the result is returned
+//               from this function
+//   args - the function arguments received
+//   env - some global variable values when this function is called
+//   query - the parsed query string of the script URL
 function generateAssertion(contents, origin, options) {
-  const idpOrigin = self.origin;
-  const location = self.location;
-  const { host } = location;
-  const testOptions = getTestOptions(location);
+  const args = {
+    contents, origin, options
+  }
+
+  const env = {
+    origin: global.origin,
+    location: global.location
+  }
 
   const assertion = {
-    watermark: 'asserted by idp-test.js',
-    location,
-    idpOrigin,
-    testOptions,
-    contents, origin, options
+    watermark: 'mock-idp.js.watermark',
+    args,
+    env,
+    query
+  }
+
+  const idp = {
+    domain: global.location.host,
+    protocol: 'mock-idp.js'
   }
 
   const assertionStr = JSON.stringify(assertion);
 
-  const idpDetails = {
-    domain: host,
-    protocol: 'idp-test.js'
-  }
+  const { generatorAction } = query;
 
-  return {
-    idp: idpDetails,
-    assertion: assertionStr
+  if(generatorAction === 'throw-error') {
+    const err = new Error('Mock Internal IdP Error');
+    err.idpErrorInfo = query.errorInfo;
+    throw err;
+
+  } else if(generatorAction === 'require-login') {
+    const err = new RTCError('idp-need-login');
+    err.idpLoginUrl = `${self.origin}/login`;
+    err.idpErrorInfo = 'login required';
+    throw err;
+
+  } else if(generatorAction === 'return-custom-idp') {
+    const { domain, protocol } = query;
+
+    return {
+      idp: {
+        domain,
+        protocol
+      },
+      assertion: assertionStr
+    }
+
+  } else if(generatorAction === 'return-invalid-result') {
+    return 'invalid-result';
+
+  } else {
+    return {
+      idp,
+      assertion: assertionStr
+    }
   }
 }
 
@@ -90,32 +136,38 @@ function generateAssertion(contents, origin, options) {
 function validateAssertion(assertionStr, origin) {
   const assertion = JSON.parse(assertionStr);
 
-  const {
-    contents,
-    options,
-    testOptions
-  } = assertion;
+  const { param, query } = assertion;
+
+  const { contents, options } = param;
+
+  const identity = options.usernameHint;
 
   const {
-    usernameHint=`unknown@${self.location.hostname}`
-  } = options;
+    validatorAction
+  } = query;
 
-  // The test options may specify what value to return
-  // for the identity and contents fields. If unspecified,
-  // the usernameHint and the original contents is returned
-  const {
-    action,
-    returnIdentity=usernameHint,
-    returnContents=contents
-  } = testOptions;
+  if(validatorAction === 'throw-error') {
+    const err = new Error('Mock Internal IdP Error');
+    err.idpErrorInfo = query.errorInfo;
+    throw err;
 
-  if(action === 'validate-throw-error') {
-    throw new Error('Mock Internal IdP Error');
+  } else if(validatorAction === 'return-custom-contents') {
+    const { contents } = query;
+    return {
+      identity,
+      contents
+    }
+
+  } else if(validatorAction === 'return-custom-identity') {
+    const { identity } = query
+    return {
+      identity,
+      contents
+    }
 
   } else {
     return {
-      identity: returnIdentity,
-      contents: returnContents
+      identity, contents
     }
   }
 }
@@ -139,12 +191,11 @@ function validateAssertion(assertionStr, origin) {
     };
  */
 
-
-//if(!(rtcIdentityProvider instanceof RTCIdentityProvider)) {
-//  throw new Error('Failed to run IdP proxy as rtcIdentityProvider is not available');
-//}
-
-rtcIdentityProvider.register({
-  generateAssertion,
-  validateAssertion
-});
+// if global.rtcIdentityProvider is defined, and the caller do not ask
+// to not register through query string, register our assertion callbacks.
+if(global.rtcIdentityProvider && query.action !== 'do-not-register') {
+  rtcIdentityProvider.register({
+    generateAssertion,
+    validateAssertion
+  });
+}
