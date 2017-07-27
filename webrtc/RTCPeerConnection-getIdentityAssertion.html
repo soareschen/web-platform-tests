@@ -11,17 +11,6 @@
   // https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
 
   /*
-    In web-platform-test, the following domains are required to be set up locally:
-      127.0.0.1   web-platform.test
-      127.0.0.1   www.web-platform.test
-      127.0.0.1   www1.web-platform.test
-      127.0.0.1   www2.web-platform.test
-      127.0.0.1   xn--n8j6ds53lwwkrqhv28a.web-platform.test
-      127.0.0.1   xn--lve-6lad.web-platform.test
-      0.0.0.0     nonexistent-origin.web-platform.test
-   */
-
-  /*
     9.6.  RTCPeerConnection Interface Extensions
       partial interface RTCPeerConnection {
         void               setIdentityProvider(DOMString provider,
@@ -42,7 +31,7 @@
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(domain, port);
 
-    pc.setIdentityProvider('${idpDomain}:${port}', {
+    pc.setIdentityProvider(idpHost, {
       protocol: 'mock-idp.js?foo=bar',
       usernameHint: `alice@${idpDomain}`,
       peerIdentity: 'bob@example.org'
@@ -66,7 +55,7 @@
       } = assertion;
 
       assert_equals(watermark, 'mock-idp.js.watermark',
-        'Expect watermark to be left by mock-idp.js');
+        'Expect assertion result to contain watermark left by mock-idp.js');
 
       assert_equals(args.origin, window.origin,
         'Expect args.origin argument to be the origin of this window');
@@ -101,6 +90,7 @@
     const [idpDomain1, idpDomain2] = getIdpDomains();
     assert_not_equals(idpDomain1, idpDomain2);
 
+    // Ask mock-idp.js to return a custom domain idpDomain2 and custom protocol foo
     pc.setIdentityProvider(hostString(idpDomain1), {
       protocol: `mock-idp.js?generatorAction=return-custom-idp&domain=${idpDomain2}&protocol=foo`,
       usernameHint: `alice@${domain2}`,
@@ -113,7 +103,7 @@
       assert_equals(idp.protocol, 'foo');
       assert_equals(assertion.options.usernameHint, `alice@${idpDomain2}`);
     });
-  }, 'getIdentityAssertion() should succeed if mock-idp.js return different domain in assertion');
+  }, 'getIdentityAssertion() should succeed if mock-idp.js return different domain and protocol in assertion');
 
   /*
     9.3.  Requesting Identity Assertions
@@ -121,8 +111,17 @@
           a valid RTCIdentityValidationResult (see 9.5 IdP Error Handling), then identity
           validation fails.
 
-      - If assertion generation fails, then the promise for the corresponding function call
-        is rejected with a newly created OperationError.
+    9.5.  IdP Error Handling
+      - If an identity provider throws an exception or returns a promise that is ultimately
+        rejected, then the procedure that depends on the IdP MUST also fail. These types of
+        errors will cause an IdP failure with an RTCError with errorDetail set to
+        "idp-execution-failure".
+
+    9.6.  RTCPeerConnection Interface Extensions
+      idpErrorInfo
+        An attribute that the IdP can use to pass additional information back to the
+        applications about the error. The format of this string is defined by the IdP and
+        may be JSON.
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
@@ -134,6 +133,7 @@
 
     const [idpDomain] = getIdpDomains();
 
+    // Ask mock-idp.js to throw an error with err.errorInfo set to bar
     pc.setIdentityProvider(hostString(idpDomain, port), {
       protocol: `mock-idp.js?generatorAction=throw-error&errorInfo=bar`,
       usernameHint: `alice@${idpDmain}`,
@@ -145,7 +145,7 @@
       assert_equals(pc.idpErrorInfo, 'bar',
         'Expect pc.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js')
     });
-  }, `getIdentityAssertion() should reject with RTCError set to idp-execution-failure if mock-idp.js throws error`);
+  }, `getIdentityAssertion() should reject with RTCError('idp-execution-failure') if mock-idp.js throws error`);
 
   /*
     9.5.  IdP Error Handling
@@ -159,6 +159,8 @@
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
+    // Ask mock-idp.js to not register its callback to the
+    // RTCIdentityProviderRegistrar
     pc.setIdentityProvider(hostString(idpDomain, port), {
       protocol: `mock-idp.js?action=do-not-register`,
       usernameHint: `alice@${idpDomain}`,
@@ -166,13 +168,14 @@
 
     return assert_rtcerror_rejection('idp-bad-script-failure',
       pc.getIdentityAssertion());
-  }, `getIdentityAssertion() should reject with RTCError set to idp-bad-script-failure if IdP proxy script do not register its callback`);
+
+  }, `getIdentityAssertion() should reject with RTCError('idp-bad-script-failure') if IdP proxy script do not register its callback`);
 
   /*
     9.3.  Requesting Identity Assertions
       4.  If the IdP proxy produces an error or returns a promise that does not resolve
-          to a valid RTCIdentityValidationResult (see 9.5 IdP Error Handling), then identity
-          validation fails.
+          to a valid RTCIdentityAssertionResult (see 9.5 IdP Error Handling), then assertion
+          generation fails.
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
@@ -180,10 +183,15 @@
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
+    // Ask mock-idp.js to return an invalid result that is not proper
+    // RTCIdentityAssertionResult
     pc.setIdentityProvider(hostString(idpDomain, port), {
       protocol: `mock-idp.js?generatorAction=return-invalid-result`,
       usernameHint: `alice@${idpDomain}`,
     });
+
+    return promise_rejects(t, 'OperationError',
+      pc.getIdentityAssertion());
   }, `getIdentityAssertion() should reject with OperationError if mock-idp.js return invalid result`);
 
   /*
@@ -204,8 +212,22 @@
 
     return assert_rtcerror_rejection('idp-load-failure',
       pc.getIdentityAssertion());
-  }, `getIdentityAssertion() should reject with RTCError set to idp-load-failure if idp cannot be loaded`);
+  }, `getIdentityAssertion() should reject with RTCError('idp-load-failure') if idp cannot be loaded`);
 
+  /*
+    9.3.1.  User Login Procedure
+      Rejecting the promise returned by generateAssertion will cause the error to
+      propagate to the application. Login errors are indicated by rejecting the
+      promise with an RTCError with errorDetail set to "idp-need-login".
+
+      The URL to login at will be passed to the application in the idpLoginUrl
+      attribute of the RTCPeerConnection.
+
+    9.5.  IdP Error Handling
+      - If the identity provider requires the user to login, the operation will fail
+        RTCError with errorDetail set to "idp-need-login" and the idpLoginUrl attribute
+        of the error set to the URL that can be used to login.
+   */
   promise_test(t => {
     const pc = new RTCPeerConnection();
 
@@ -234,7 +256,7 @@
       assert_equals(pc.idpErrorInfo, 'login required',
         'Expect pc.idpErrorInfo to be set to info set by mock-idp.js');
     });
-  }, `getIdentityAssertion() should reject with RTCError set to idp-need-login when mock-idp.js requires login`);
+  }, `getIdentityAssertion() should reject with RTCError('idp-need-login') when mock-idp.js requires login`);
 
   /*
     RTCIdentityProviderOptions Members
@@ -250,8 +272,12 @@
       peerIdentity: 'bob@example.net'
     });
 
-    pc.setIdentityProvider(host, {
-      protocol: 'idp-test.js'
+    const port = window.location.port;
+    const [idpDomain] = getIdpDomains();
+    const idpHost = hostString(idpDomain, port);
+
+    pc.setIdentityProvider(idpHost, {
+      protocol: 'mock-idp.js'
     });
 
     return pc.getIdentityAssertion()
@@ -291,7 +317,6 @@
   promise_test(t => {
     const pc = new RTCPeerConnection();
     const port = window.location.port;
-
     const [idpDomain] = getIdpDomains();
 
     pc.setIdentityProvider(hostString(idpDomain, port), {
@@ -314,7 +339,6 @@
   promise_test(t => {
     const pc = new RTCPeerConnection();
     const port = window.location.port;
-
     const [idpDomain] = getIdpDomains();
 
     pc.setIdentityProvider(hostString(idpDomain, port), {

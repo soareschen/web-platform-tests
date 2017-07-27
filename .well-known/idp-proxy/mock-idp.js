@@ -1,14 +1,15 @@
 'use strict'
 
 /*
-  The test identity provider is a naive IdP that provides
-  absolutely no security for authentication. It can generate
-  identity assertion for whatever identity that is requested.
-  It validates identity assertion by simply decoding the JSON
-  and return whatever that is inside, with no integrity
+  mock-idp.js is a naive IdP that provides absolutely no
+  security for authentication. It can generate identity
+  assertion for whatever identity that is requested.
+
+  mock-idp.js validates identity assertion by simply decoding
+  the JSON and return whatever that is inside, with no integrity
   protection and thus can be spoofed by anyone.
 
-  While being not practical at all, the test IdP allows us
+  While being not practical at all, mock-idp.js allows us
   to test various aspects of the identity API and allow tests
   to manipulate the IdP at will.
  */
@@ -50,9 +51,8 @@ function parseQueryString(urlStr) {
     };
  */
 
-// In RTCIdentityProviderGlobalScope, global is self,
-// In regular JS, global is window
-const global = self || window;
+// In RTCIdentityProviderGlobalScope, global is self
+const global = self;
 const query = parseQueryString(global.location);
 
 // Generate a naive identity assertion. The result assertion
