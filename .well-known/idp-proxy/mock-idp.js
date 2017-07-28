@@ -1,4 +1,7 @@
-'use strict'
+'use strict';
+
+// Code is based on the following editor draft:
+//   https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
 
 /*
   mock-idp.js is a naive IdP that provides absolutely no
@@ -28,6 +31,7 @@ function parseQueryString(urlStr) {
 }
 
 /*
+  9.2.1.  Interface Exposed by Identity Providers
     callback GenerateAssertionCallback =
       Promise<RTCIdentityAssertionResult> (
         DOMString contents,
@@ -66,24 +70,24 @@ const query = parseQueryString(global.location);
 function generateAssertion(contents, origin, options) {
   const args = {
     contents, origin, options
-  }
+  };
 
   const env = {
     origin: global.origin,
     location: global.location
-  }
+  };
 
   const assertion = {
     watermark: 'mock-idp.js.watermark',
     args,
     env,
     query
-  }
+  };
 
   const idp = {
     domain: global.location.host,
     protocol: 'mock-idp.js'
-  }
+  };
 
   const assertionStr = JSON.stringify(assertion);
 
@@ -109,7 +113,7 @@ function generateAssertion(contents, origin, options) {
         protocol
       },
       assertion: assertionStr
-    }
+    };
 
   } else if(generatorAction === 'return-invalid-result') {
     return 'invalid-result';
@@ -118,11 +122,12 @@ function generateAssertion(contents, origin, options) {
     return {
       idp,
       assertion: assertionStr
-    }
+    };
   }
 }
 
 /*
+  9.2.1.  Interface Exposed by Identity Providers
     callback ValidateAssertionCallback =
       Promise<RTCIdentityValidationResult> (
         DOMString assertion,
@@ -137,7 +142,6 @@ function validateAssertion(assertionStr, origin) {
   const assertion = JSON.parse(assertionStr);
 
   const { param, query } = assertion;
-
   const { contents, options } = param;
 
   const identity = options.usernameHint;
@@ -156,19 +160,12 @@ function validateAssertion(assertionStr, origin) {
     return {
       identity,
       contents
-    }
-
-  } else if(validatorAction === 'return-custom-identity') {
-    const { identity } = query
-    return {
-      identity,
-      contents
-    }
+    };
 
   } else {
     return {
       identity, contents
-    }
+    };
   }
 }
 
@@ -194,7 +191,7 @@ function validateAssertion(assertionStr, origin) {
 // if global.rtcIdentityProvider is defined, and the caller do not ask
 // to not register through query string, register our assertion callbacks.
 if(global.rtcIdentityProvider && query.action !== 'do-not-register') {
-  rtcIdentityProvider.register({
+  global.rtcIdentityProvider.register({
     generateAssertion,
     validateAssertion
   });

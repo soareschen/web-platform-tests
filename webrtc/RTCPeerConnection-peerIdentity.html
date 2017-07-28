@@ -178,7 +178,7 @@
       usernameHint: `alice@${idpDomain2}`
     });
 
-    return pc.getIdentityAssertion()
+    return pc1.getIdentityAssertion()
     .then(assertionResultStr => {
       const { idp, assertion } = parseAssertionResult(assertionResultStr);
 
@@ -215,16 +215,14 @@
       IdP in use.
    */
   promise_test(t => {
-    // pc1 is used to generate assertion without error
-    const pc1 = new RTCPeerConnection();
+    const port = window.location.port;
+    const [idpDomain] = getIdpDomains();
+    const idpHost = hostString(idpDomain, port);
 
-    // pc2 is used to get peerIdentity and error during validation
+    const pc1 = new RTCPeerConnection();
     const pc2 = new RTCPeerConnection({
       peerIdentity: `alice@${idpDomain}`
     });
-
-    const [idpDomain] = getIdpDomains();
-    const idpHost = hostString(idpDomain, port);
 
     // Ask mock-idp.js to throw error during validation,
     // i.e. during pc2.setRemoteDescription()
@@ -232,8 +230,6 @@
       protocol: 'mock-idp.js?validatorAction=throw-error&errorInfo=bar',
       usernameHint: `alice@${idpDomain}`
     });
-
-    const peerIdentityPromise = pc2.peerIdentity;
 
     return pc1.createOffer()
     .then(offer => Promise.all([
@@ -244,7 +240,7 @@
     ]))
     .then(() => {
       assert_equals(pc2.idpErrorInfo, 'bar',
-        'Expect pc2.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js')
+        'Expect pc2.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js');
     });
   }, `When IdP throws error and pc has target peer identity, setRemoteDescription() and peerIdentity rejected with RTCError('idp-execution-error')`);
 
@@ -266,12 +262,10 @@
       a provisional answer) to resolve or reject the identity.
    */
   promise_test(t => {
-    // pc1 is used to generate assertion without error
     const pc1 = new RTCPeerConnection();
-
-    // pc2 is used to get peerIdentity and possible error during validation
     const pc2 = new RTCPeerConnection();
 
+    const port = window.location.port;
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
 
@@ -282,7 +276,7 @@
       usernameHint: `alice@${idpDomain}`
     });
 
-    const peerIdentityPromise = pc2.peerIdentity;
+    const peerIdentityPromise1 = pc2.peerIdentity;
 
     return pc1.createOffer()
     .then(offer =>

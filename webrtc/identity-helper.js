@@ -65,6 +65,6 @@ function hostString(domain, port) {
   if(port === '') {
     return domain;
   } else {
-    return `${domain}:${port}`
+    return `${domain}:${port}`;
   }
 }

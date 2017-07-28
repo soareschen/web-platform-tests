@@ -41,7 +41,7 @@
     const port = window.location.port;
 
     const [idpDomain] = getIdpDomains();
-    const idpHost = hostString(domain, port);
+    const idpHost = hostString(idpDomain, port);
 
     pc.setIdentityProvider(idpHost, {
       protocol: 'mock-idp.js?foo=bar',
@@ -91,7 +91,7 @@
       assert_equals(query.foo, 'bar',
         'Expect query string to be parsed by mock-idp.js and returned back');
     });
-  }, 'getIdentityAssertion() should load identity proxy and return assertion generated');
+  }, 'getIdentityAssertion() should load IdP proxy and return assertion generated');
 
   // When generating assertion, the RTCPeerConnection doesn't care if the returned assertion
   // represents identity of different domain
@@ -104,9 +104,9 @@
       'Sanity check two idpDomains are different');
 
     // Ask mock-idp.js to return a custom domain idpDomain2 and custom protocol foo
-    pc.setIdentityProvider(hostString(idpDomain1), {
+    pc.setIdentityProvider(hostString(idpDomain1, port), {
       protocol: `mock-idp.js?generatorAction=return-custom-idp&domain=${idpDomain2}&protocol=foo`,
-      usernameHint: `alice@${domain2}`,
+      usernameHint: `alice@${idpDomain2}`,
     });
 
     return pc.getIdentityAssertion()
@@ -143,20 +143,19 @@
       'Expect initial pc.idpErrorInfo to be null');
 
     const port = window.location.port;
-
     const [idpDomain] = getIdpDomains();
 
     // Ask mock-idp.js to throw an error with err.errorInfo set to bar
     pc.setIdentityProvider(hostString(idpDomain, port), {
       protocol: `mock-idp.js?generatorAction=throw-error&errorInfo=bar`,
-      usernameHint: `alice@${idpDmain}`,
+      usernameHint: `alice@${idpDomain}`,
     });
 
     return assert_rtcerror_rejection('idp-execution-failure',
       pc.getIdentityAssertion())
     .then(() => {
       assert_equals(pc.idpErrorInfo, 'bar',
-        'Expect pc.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js')
+        'Expect pc.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js');
     });
   }, `getIdentityAssertion() should reject with RTCError('idp-execution-failure') if mock-idp.js throws error`);
 
@@ -225,7 +224,7 @@
 
     return assert_rtcerror_rejection('idp-load-failure',
       pc.getIdentityAssertion());
-  }, `getIdentityAssertion() should reject with RTCError('idp-load-failure') if idp cannot be loaded`);
+  }, `getIdentityAssertion() should reject with RTCError('idp-load-failure') if IdP cannot be loaded`);
 
   /*
     9.3.1.  User Login Procedure
@@ -248,7 +247,6 @@
       'Expect initial pc.idpLoginUrl to be null');
 
     const port = window.location.port;
-
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
 
@@ -335,7 +333,6 @@
   promise_test(t => {
     const pc = new RTCPeerConnection();
     const port = window.location.port;
-
     const [idpDomain] = getIdpDomains();
 
     pc.setIdentityProvider(hostString(idpDomain, port), {
@@ -348,7 +345,7 @@
       pc.createOffer()
       .then(offer => {
         assert_true(offer.sdp.includes(`\r\na=identity:${assertionResultStr}`,
-          'Expect SDP to have a=identity line containing assertion string'))
+          'Expect SDP to have a=identity line containing assertion string'));
       }));
   }, 'createOffer() should return SDP containing identity assertion string if identity provider is set');
 
@@ -392,11 +389,12 @@
     });
 
     return new RTCPeerConnection()
-      .createOffer()
-      .then(offer => pc.setRemoteDescription(offer))
-      .then(() =>
-        promise_rejects(t, 'NotReadableError',
-          pc.createAnswer()));
+    .createOffer()
+    .then(offer => pc.setRemoteDescription(offer))
+    .then(() =>
+      promise_rejects(t, 'NotReadableError',
+        pc.createAnswer()));
+
   }, 'createAnswer() should reject with NotReadableError if identitity assertion request fails');
 
 </script>
