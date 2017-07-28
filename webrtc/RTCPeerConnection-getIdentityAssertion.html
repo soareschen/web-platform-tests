@@ -10,12 +10,24 @@
   // Test is based on the following editor draft:
   // https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
 
+  // The tests here interacts with the mock identity provider located at
+  //   /.well-known/idp-proxy/mock-idp.js
+
+  // The following helper functions are called from identity-helper.js
+  //   parseAssertionResult
+  //   getIdpDomains
+  //   assert_rtcerror_rejection
+  //   hostString
+
   /*
     9.6.  RTCPeerConnection Interface Extensions
       partial interface RTCPeerConnection {
         void               setIdentityProvider(DOMString provider,
                                                optional RTCIdentityProviderOptions options);
         Promise<DOMString> getIdentityAssertion();
+        readonly attribute Promise<RTCIdentityAssertion> peerIdentity;
+        readonly attribute DOMString?                    idpLoginUrl;
+        readonly attribute DOMString?                    idpErrorInfo;
       };
 
       dictionary RTCIdentityProviderOptions {
@@ -88,7 +100,8 @@
     const port = window.location.port;
 
     const [idpDomain1, idpDomain2] = getIdpDomains();
-    assert_not_equals(idpDomain1, idpDomain2);
+    assert_not_equals(idpDomain1, idpDomain2,
+      'Sanity check two idpDomains are different');
 
     // Ask mock-idp.js to return a custom domain idpDomain2 and custom protocol foo
     pc.setIdentityProvider(hostString(idpDomain1), {
@@ -286,6 +299,38 @@
       assert_equals(assertion.args.options.peerIdentity, 'bob@example.net');
     });
   }, 'setIdentityProvider() with no peerIdentity provided should use peerIdentity value from getConfiguration()');
+
+  /*
+    9.6.  setIdentityProvider
+      3.  If any identity provider value has changed, discard any stored identity assertion.
+   */
+  promise_test(() => {
+    const pc = new RTCPeerConnection();
+    const port = window.location.port;
+    const [idpDomain] = getIdpDomains();
+    const idpHost = hostString(idpDomain, port);
+
+    pc.setIdentityProvider(idpHost, {
+      protocol: 'mock-idp.js?mark=first'
+    });
+
+    return pc.getIdentityAssertion()
+    .then(assertionResultStr => {
+      const { assertion } = parseAssertionResult(assertionResultStr);
+      assert_equals(assertion.query.mark, 'first');
+
+      pc.setIdentityProvider(idpHost, {
+        protocol: 'mock-idp.js?mark=second'
+      });
+
+      return pc.getIdentityAssertion();
+    })
+    .then(assertionResultStr => {
+      const { assertion } = parseAssertionResult(assertionResultStr);
+      assert_equals(assertion.query.mark, 'second',
+        'Expect generated assertion is from second IdP config');
+    });
+  }, `Calling setIdentityProvider() multiple times should reset identity assertions`);
 
   promise_test(t => {
     const pc = new RTCPeerConnection();

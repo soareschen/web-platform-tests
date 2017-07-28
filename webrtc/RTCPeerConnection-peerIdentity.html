@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset=utf-8>
-<title>RTCPeerConnection.prototype.getIdentityAsssertion</title>
+<title>RTCPeerConnection.prototype.peerIdentity</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
 <script src="identity-helper.js"></script>
@@ -8,7 +8,16 @@
   'use strict';
 
   // Test is based on the following editor draft:
-  // https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
+  //   https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
+
+  // The tests here interacts with the mock identity provider located at
+  //   /.well-known/idp-proxy/mock-idp.js
+
+  // The following helper functions are called from identity-helper.js
+  //   parseAssertionResult
+  //   getIdpDomains
+  //   assert_rtcerror_rejection
+  //   hostString
 
   /*
     9.6.  RTCPeerConnection Interface Extensions
@@ -17,6 +26,8 @@
                                                optional RTCIdentityProviderOptions options);
         Promise<DOMString> getIdentityAssertion();
         readonly attribute Promise<RTCIdentityAssertion> peerIdentity;
+        readonly attribute DOMString?                    idpLoginUrl;
+        readonly attribute DOMString?                    idpErrorInfo;
       };
 
       dictionary RTCIdentityProviderOptions {
@@ -30,109 +41,6 @@
         attribute DOMString idp;
         attribute DOMString name;
       };
-
-    4.3.2. setRemoteDescription
-      The target peer identity cannot be changed once set. Once set, if a different
-      value is provided, the user agent MUST reject the returned promise with a newly
-      created InvalidModificationError and abort this operation. The RTCPeerConnection
-      MUST be closed if the validated peer identity does not match the target peer
-      identity.
-
-      If there is no target peer identity, then setRemoteDescription does not await the
-      completion of identity validation.
-
-    9.4.  Verifying Identity Assertions
-      The identity assertion request process involves the following asynchronous steps:
-        1.  The RTCPeerConnection awaits any prior identity validation. Only one identity
-            validation can run at a time for an RTCPeerConnection. This can happen because
-            the resolution of setRemoteDescription is not blocked by identity validation
-            unless there is a target peer identity.
-
-        2.  The RTCPeerConnection loads the identity assertion from the session description
-            and decodes the base64 value, then parses the resulting JSON. The idp parameter
-            of the resulting dictionary contains a domain and an optional protocol value
-            that identifies the IdP, as described in [RTCWEB-SECURITY-ARCH].
-
-        3.  The RTCPeerConnection instantiates the identified IdP as described in 9.1.1
-            Identity Provider Selection and 9.2 Registering an IdP Proxy. If the IdP
-            cannot be loaded, instantiated or the IdP proxy is not registered, this
-            process fails.
-
-        4.  The RTCPeerConnection invokes the validateAssertion method registered by the IdP.
-
-            The assertion parameter is taken from the decoded identity assertion. The origin
-            parameter contains the origin of the script that calls the RTCPeerConnection
-            method that triggers this behavior.
-
-        5.  The IdP proxy returns a promise and performs the validation process asynchronously.
-
-            The IdP proxy verifies the identity assertion using whatever means necessary.
-            Depending on the authentication protocol this could involve interacting with the
-            IdP server.
-
-        6.  If the IdP proxy produces an error or returns a promise that does not resolve
-            to a valid RTCIdentityValidationResult (see 9.5 IdP Error Handling), then
-            identity validation fails.
-
-        7.  Once the assertion is successfully verified, the IdP proxy resolves the promise
-            with an RTCIdentityValidationResult containing the validated identity and the
-            original contents that are the payload of the assertion.
-
-
-        10. The RTCPeerConnection resolves the peerIdentity attribute with a new instance
-            of RTCIdentityAssertion that includes the IdP domain and peer identity.
-
-        11. The user agent MAY display identity information to a user in its UI. Any user
-            identity information that is displayed in this fashion MUST use a mechanism that
-            cannot be spoofed by content.
-
-      If identity validation fails, the peerIdentity promise is rejected with a newly
-      created OperationError.
-
-      If identity validation fails and there is a target peer identity for the
-      RTCPeerConnection, the promise returned by setRemoteDescription MUST be rejected
-      with the same DOMException.
-
-    9.5.  IdP Error Handling
-      - A RTCPeerConnection might be configured with an identity provider, but loading of
-        the IdP URI fails. Any procedure that attempts to invoke such an identity provider
-        and cannot load the URI fails with an RTCError with errorDetail set to
-        "idp-load-failure" and the httpRequestStatusCode attribute of the error set to the
-        HTTP status code of the response.
-
-      - If the IdP loads fails due to the TLS certificate used for the HTTPS connection not
-        being trusted, it fails with an RTCError with errorDetail set to "idp-tls-failure".
-        This typically happens when the IdP uses certificate pinning and an intermediary
-        such as an enterprise firewall has intercepted the TLS connection.
-
-      - If the script loaded from the identity provider is not valid JavaScript or does not
-        implement the correct interfaces, it causes an IdP failure with an RTCError with
-        errorDetail set to "idp-bad-script-failure".
-
-      - An apparently valid identity provider might fail in several ways.
-
-        If the IdP token has expired, then the IdP MUST fail with an RTCError with
-        errorDetail set to "idp-token-expired".
-
-        If the IdP token is not valid, then the IdP MUST fail with an RTCError with
-        errorDetail set to "idp-token-invalid".
-
-      - The user agent SHOULD limit the time that it allows for an IdP to 15 seconds.
-        This includes both the loading of the IdP proxy and the identity assertion
-        generation or validation. Failure to do so potentially causes the corresponding
-        operation to take an indefinite amount of time. This timer can be cancelled when
-        the IdP proxy produces a response. Expiration of this timer cases an IdP failure
-        with an RTCError with errorDetail set to "idp-timeout".
-
-      - If the identity provider requires the user to login, the operation will fail
-        RTCError with errorDetail set to "idp-need-login" and the idpLoginUrl attribute
-        of the error set to the URL that can be used to login.
-
-      - Even when the IdP proxy produces a positive result, the procedure that uses this
-        information might still fail. Additional validation of a RTCIdentityValidationResult
-        value is still necessary. The procedure for validation of identity assertions
-        describes additional steps that are required to successfully validate the output
-        of the IdP proxy.
    */
 
   /*
@@ -164,7 +72,7 @@
     .then(() => pc2.peerIdentity)
     .then(identityAssertion => {
       const { idp, name } = identityAssertion;
-      assert_equals(idp, host, `Expect IdP domain to be ${idpDomain}`);
+      assert_equals(idp, idpDomain, `Expect IdP domain to be ${idpDomain}`);
       assert_equals(identityAssertion, `alice@${idpDomain}`,
         `Expect validated identity from mock-idp.js to be same as specified in usernameHint`);
     });
@@ -230,7 +138,7 @@
     // Ask mockidp.js to return custom contents in validation result
     pc1.setIdentityProvider(idpHost, {
       protocol: 'mock-idp.js?validatorAction=return-custom-contents&contents=bogus',
-      usernameHint: `alice@{idpDomain}`
+      usernameHint: `alice@${idpDomain}`
     });
 
     const peerIdentityPromise = pc2.peerIdentity;
@@ -241,11 +149,7 @@
         pc2.setRemoteDescription(offer)),
       promise_rejects(t, 'OperationError',
         peerIdentityPromise)
-    ]))
-    .then(() => {
-      assert_equals(pc2.peerIdentity, peerIdentityPromise,
-        'Expect pc2.peerIdentity to not change and stay rejected');
-    });
+    ]));
   }, 'setRemoteDescription() with peerIdentity set and with IdP proxy that return validationAssertion with mismatch contents should reject with OperationError');
 
   /*
@@ -257,6 +161,9 @@
   promise_test(t => {
     const port = window.location.port;
     const [idpDomain1, idpDomain2] = getIdpDomains();
+    assert_not_equals(idpDomain1, idpDomain2,
+      'Sanity check two idpDomains are different');
+
     const idpHost1 = hostString(idpDomain1, port);
 
     const pc1 = new RTCPeerConnection();
@@ -271,11 +178,75 @@
       usernameHint: `alice@${idpDomain2}`
     });
 
-    return pc1.createOffer()
-    .then(offer =>
+    return pc.getIdentityAssertion()
+    .then(assertionResultStr => {
+      const { idp, assertion } = parseAssertionResult(assertionResultStr);
+
+      assert_equals(idp.domain, idpDomain1,
+        'Sanity check domain of assertion is domain1');
+
+      assert_equals(assertion.options.usernameHint, `alice@${idpDomain2}`,
+        'Sanity check domain1 is going to validate a domain2 identity');
+
+      return pc1.createOffer();
+    })
+    .then(offer => Promise.all([
       promise_rejects(t, 'OperationError',
-        pc2.setRemoteDescription(offer)));
-  }, 'setRemoteDescription() should reject with OperationError if IdP return validated identity different from its own domain');
+        pc2.setRemoteDescription(offer)),
+      promise_rejects(t, 'OperationError',
+        pc2.peerIdentity)
+    ]));
+  }, 'setRemoteDescription() and peerIdentity should reject with OperationError if IdP return validated identity that is different from its own domain');
+
+  /*
+    9.4 Verifying Identity Assertions
+      If identity validation fails and there is a target peer identity for the
+      RTCPeerConnection, the promise returned by setRemoteDescription MUST be rejected
+      with the same DOMException.
+
+    9.5 IdP Error Handling
+      - If an identity provider throws an exception or returns a promise that is ultimately
+        rejected, then the procedure that depends on the IdP MUST also fail. These types of
+        errors will cause an IdP failure with an RTCError with errorDetail set to
+        "idp-execution-failure".
+
+      Any error generated by the IdP MAY provide additional information in the
+      idpErrorInfo attribute. The information in this string is defined by the
+      IdP in use.
+   */
+  promise_test(t => {
+    // pc1 is used to generate assertion without error
+    const pc1 = new RTCPeerConnection();
+
+    // pc2 is used to get peerIdentity and error during validation
+    const pc2 = new RTCPeerConnection({
+      peerIdentity: `alice@${idpDomain}`
+    });
+
+    const [idpDomain] = getIdpDomains();
+    const idpHost = hostString(idpDomain, port);
+
+    // Ask mock-idp.js to throw error during validation,
+    // i.e. during pc2.setRemoteDescription()
+    pc1.setIdentityProvider(idpHost, {
+      protocol: 'mock-idp.js?validatorAction=throw-error&errorInfo=bar',
+      usernameHint: `alice@${idpDomain}`
+    });
+
+    const peerIdentityPromise = pc2.peerIdentity;
+
+    return pc1.createOffer()
+    .then(offer => Promise.all([
+      assert_rtcerror_rejection('idp-execution-failure',
+        pc2.setRemoteDescription(offer)),
+      assert_rtcerror_rejection('idp-execution-failure',
+        pc2.peerIdentity)
+    ]))
+    .then(() => {
+      assert_equals(pc2.idpErrorInfo, 'bar',
+        'Expect pc2.idpErrorInfo to be set to the err.idpErrorInfo thrown by mock-idp.js')
+    });
+  }, `When IdP throws error and pc has target peer identity, setRemoteDescription() and peerIdentity rejected with RTCError('idp-execution-error')`);
 
   /*
     4.3.2. setRemoteDescription
