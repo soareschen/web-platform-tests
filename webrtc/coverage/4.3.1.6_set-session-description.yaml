@@ -258,17 +258,17 @@ steps:
                   - RTCPeerConnection-setDescription-transceiver
                 desc: >
                   Let transceiver be the RTCRtpTransceiver used to create the
+                    media description.
+
+              - step: 2
+                status: tested
+                files:
+                  - RTCPeerConnection-setDescription-transceiver
+                desc: >
+                  Set transceiver's mid value to the mid of the corresponding
                   media description.
 
-            - step: 2
-              status: tested
-              files:
-                - RTCPeerConnection-setDescription-transceiver
-              desc: >
-                Set transceiver's mid value to the mid of the corresponding
-                media description.
-
-          - step: 8
+            - step: 8
             status: tested
             files:
               - RTCPeerConnection-ontrack
