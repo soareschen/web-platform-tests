@@ -1,11 +1,11 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
-section: 4.3.1.2
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+section: 4.4.1.2
 desc: Enqueue an operation
 steps:
   - step: 1
     status: trivial
     desc: >
-      Let connection be the current RTCPeerConnection object.
+      Let connection be the RTCPeerConnection object.
 
   - step: 2
     status: todo
@@ -26,12 +26,12 @@ steps:
   - step: 5
     status: untestable
     desc: >
-      Append operation to [[operations]].
+      Append operation to [[Operations]].
 
   - step: 6
     status: todo
     desc: >
-      If the length of [[operations]] is exactly 1, execute operation.
+      If the length of [[Operations]] is exactly 1, execute operation.
 
   - step: 7
     status: todo
@@ -69,13 +69,13 @@ steps:
           - step: 2
             status: untestable
             desc: >
-              Remove the first element of [[operations]].
+              Remove the first element of [[Operations]].
 
           - step: 3
             status: todo
             desc: >
-              If [[operations]] is non-empty, execute the operation represented
-              by the first element of [[ operations]].
+              If [[Operations]] is non-empty, execute the operation represented
+              by the first element of [[Operations]].
 
       - step: 5
         status: trivial

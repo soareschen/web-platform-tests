@@ -1,5 +1,5 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
-section: 4.3.2
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+section: 4.4.2
 desc: setLocalDescription
 steps:
   - step: 1
@@ -33,26 +33,13 @@ steps:
       If description.sdp is null and description.type is offer, set
       description.sdp to lastOffer.
 
-  - step: 6
+  - step: 8
     status: tested
     files:
       - RTCPeerConnection-setLocalDescription-offer
-    desc: >
-      If description.type is offer and description.sdp does not match lastOffer,
-      reject the promise with a newly created InvalidModificationError and abort
-      these steps.
-
-  - step: 7
-    status: tested
-    files:
-      RTCPeerConnection-setLocalDescription-answer
-    desc: >
-      If description.type is answer or pranswer and description.sdp does not
-      match lastAnswer, reject the promise with a newly created
-      InvalidModificationError and abort these steps.
-
-  - step: 8
-    status: tested
+      - RTCPeerConnection-setLocalDescription-answer
+      - RTCPeerConnection-setLocalDescription-pranswer
+      - RTCPeerConnection-setLocalDescription-rollback
     desc: >
       Return the result of setting the RTCSessionDescription indicated by the
-      method's first argument. 
+      method's first argument.

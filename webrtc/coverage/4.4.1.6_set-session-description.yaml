@@ -1,10 +1,10 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
-section: 4.3.1.6
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+section: 4.4.1.6
 desc: Set the RTCSessionSessionDescription
 steps:
   - step: 1
     status: trivial
-    desc: |
+    desc: >
       Let p be a new promise.
 
   - step: 2
@@ -26,12 +26,6 @@ steps:
               If connection's [[IsClosed]] slot is true, then abort these steps.
 
           - step: 2
-            status: untestable
-            desc: >
-              If elements of the SDP were modified, then reject p with a newly
-              created InvalidModificationError and abort these steps.
-
-          - step: 3
             status: tested
             files:
               - RTCPeerConnection-setLocalDescription-answer
@@ -43,27 +37,55 @@ steps:
               section 5.6.), then reject p with a newly created
               InvalidStateError and abort these steps.
 
+          - step: 3
+            status: tested
+            files:
+              - RTCPeerConnection-setLocalDescription-offer
+            desc: >
+              If description is set as a local description, if description.type
+              is offer and description.sdp is not equal to connection's
+              [[LastOffer]] slot, then reject p with a newly created
+              InvalidModificationError and abort these steps.
+
           - step: 4
+            status: tested
+            files:
+              - RTCPeerConnection-setLocalDescription-rollback
+            desc: >
+              If description is set as a local description, if description.type
+              is "rollback" and signaling state is "stable" then reject p with
+              a newly created InvalidStateError and abort these steps.
+
+          - step: 5
+            status: tested
+            files:
+              - RTCPeerConnection-setLocalDescription-answer
+            desc: >
+              If description is set as a local description, if description.type
+              is "answer" or "pranswer" and description.sdp is not equal to
+              connection's [[LastAnswer]] slot, then reject p with a newly
+              created InvalidModificationError and abort these steps.
+
+          - step: 6
             status: tested
             files:
               - RTCPeerConnection-setRemoteDescription-offer
             desc: >
-            If the content of description is not valid SDP syntax, then reject p
-            with an RTCError (with errorDetail set to "sdp-syntax-error" and the
-            sdpLineNumber attribute set to the line number in the SDP where the
-            syntax error was detected) and abort these steps.
+              If the content of description is not valid SDP syntax, then reject
+              p with an RTCError (with errorDetail set to "sdp-syntax-error"
+              and the sdpLineNumber attribute set to the line number in the SDP
+              where the syntax error was detected) and abort these steps.
 
-          - step: 5
+          - step: 7
             status: untestable
             desc: >
               If the content of description is invalid, then reject p with a
               newly created InvalidAccessError and abort these steps.
 
-          - step: 6
+          - step: 8
             status: untestable
             desc: >
-              For all other errors, for example if description cannot be applied
-              at the media layer, reject p with a newly created OperationError.
+              For all other errors, reject p with a newly created OperationError.
 
       - step: 2
         status: trivial
@@ -77,21 +99,18 @@ steps:
               If connection's [[isClosed]] slot is true, then abort these steps.
 
           - step: 2
-            status: tested
-            files:
-              - RTCPeerConnection-setLocalDescription
+            status: trivial
             desc: >
               If description is set as a local description, then run one of the
               following steps
             steps:
-
               - status: tested
                 files:
                   - RTCPeerConnection-setLocalDescription-offer
                 desc: >
                   If description is of type "offer", set
                   connection.pendingLocalDescription to description and
-                  signaling state to have-local-offer.
+                  signaling state to "have-local-offer".
 
               - status: tested
                 files:
@@ -107,7 +126,7 @@ steps:
                   Set both pendingRemoteDescription and pendingLocalDescription
                   to null.
 
-                  Finally set connection's signaling state to stable
+                  Finally set connection's signaling state to "stable".
 
               - status: tested
                 files:
@@ -115,7 +134,7 @@ steps:
                 desc: >
                   If description is of type "rollback", then this is a rollback.
                   Set connection.pendingLocalDescription to null and signaling
-                  state to stable.
+                  state to "stable".
 
               - status: tested
                 files:
@@ -123,23 +142,30 @@ steps:
                 desc: >
                   If description is of type "pranswer", then set
                   connection.pendingLocalDescription to description and
-                  signaling state to have-local-pranswer.
+                  signaling state to "have-local-pranswer".
 
           - step: 3
             status: tested
             files:
               - RTCPeerConnection-setRemoteDescription
             desc: >
-              Otherwise, if description is set as a remote description, then
-              run one of the following steps
+              Otherwise, if description is set as a remote description, then run
+              one of the following steps
             steps:
+              - status: todo
+                desc: >
+                  If description is set as a remote description, if
+                  description.type is "rollback" and signaling state is "stable"
+                  then reject p with a newly created InvalidStateError and abort
+                  these steps.
+
               - status: tested
                 files:
                   - RTCPeerConnection-setRemoteDescription-offer
                 desc: >
                   If description is of type "offer", set
                   connection.pendingRemoteDescription attribute to description
-                  and signaling state to have-remote-offer.
+                  and signaling state to "have-remote-offer".
 
               - status: tested
                 files:
@@ -154,16 +180,15 @@ steps:
                   Set both pendingRemoteDescription and pendingLocalDescription
                   to null.
 
-                  Finally setconnection's signaling state to stable
+                  Finally set connection's signaling state to "stable".
 
               - status: tested
                 files:
                   - RTCPeerConnection-setRemoteDescription-rollback
                 desc: >
                   If description is of type "rollback", then this is a rollback.
-
                   Set connection.pendingRemoteDescription to null and signaling
-                  state to stable.
+                  state to "stable".
 
               - status: tested
                 files:
@@ -171,7 +196,8 @@ steps:
                 desc: >
                   If description is of type "pranswer", then set
                   connection.pendingRemoteDescription to description and
-                  signaling state to have-remote-pranswer.
+                  signaling state to "have-remote-pranswer".
+
 
           - step: 4
             status: tested
@@ -188,7 +214,7 @@ steps:
               If description is of type "answer", and it initiates the closure
               of an existing SCTP association, as defined in [SCTP-SDP],
               Sections 10.3 and 10.4, set the value of connection's
-              [[sctpTransport]] internal slot to null.
+              [[SctpTransport]] internal slot to null.
 
           - step: 6
             status: tested
@@ -205,8 +231,8 @@ steps:
                 desc: >
                   If description initiates the establishment of a new SCTP
                   association, as defined in [SCTP-SDP], Sections 10.3 and 10.4,
-                  set the value of connection's [[sctpTransport]] internal slot
-                  to a newly created RTCSctpTransport.
+                  set the value of connection's [[SctpTransport]] internal slot
+                  to a newly created RTCSctpTransport .
 
               - step: 2
                 status: todo
@@ -230,12 +256,12 @@ steps:
                   - step: 2
                     status: untestable
                     desc: >
-                      Set channel's readyState attribute to closed.
+                      Set channel's readyState attribute to "closed".
 
                   - step: 3
                     status: untestable
                     desc: >
-                      Fire an event named error with a ResourceInUse exception
+                      Fire an event named error with an OperationError exception
                       at channel.
 
                   - step: 4
@@ -249,8 +275,8 @@ steps:
               - RTCPeerConnection-setDescription-transceiver
             desc: >
               If description is set as a local description, then run the
-              following steps for each media description in description that is
-              not yet associated with an RTCRtpTransceiver object
+              following steps for each media description in description
+              that is not yet associated with an RTCRtpTransceiver object
             steps:
               - step: 1
                 status: tested
@@ -258,7 +284,7 @@ steps:
                   - RTCPeerConnection-setDescription-transceiver
                 desc: >
                   Let transceiver be the RTCRtpTransceiver used to create the
-                    media description.
+                  media description.
 
               - step: 2
                 status: tested
@@ -267,6 +293,19 @@ steps:
                 desc: >
                   Set transceiver's mid value to the mid of the corresponding
                   media description.
+
+              - step: 3
+                status: todo
+                desc: >
+                  If transceiver's [[Stopped]] slot is true, abort these sub steps.
+
+              - step: 4
+                status: todo
+                desc: >
+                  If description is of type "answer" or "pranswer", then set
+                  transceiver's [[CurrentDirection]] slot to an
+                  RTCRtpTransceiverDirection value representing the direction of
+                  the corresponding media description.
 
             - step: 8
             status: tested
@@ -274,78 +313,112 @@ steps:
               - RTCPeerConnection-ontrack
             desc: >
               If description is set as a remote description, then run the
-              following steps for each media description in description
+              following steps
             steps:
               - step: 1
-                status: todo
-                files:
-                  - RTCPeerConnection-setDescription-transceiver
+                status: trivial
                 desc: >
-                  As described by [JSEP] (section 5.9.), attempt to find an
-                  existing RTCRtpTransceiver object, transceiver, to represent
-                  the media description.
+                  Let trackEvents be an empty list.
 
               - step: 2
-                status: tested
-                files:
-                  - RTCPeerConnection-ontrack
+                status: todo
                 desc: >
-                  If no suitable transceiver is found (transceiver is unset),
-                  run the following steps
+                  Run the following steps for each media description in
+                  description
                 steps:
                   - step: 1
-                    status: tested
-                    files:
-                      - RTCPeerConnection-ontrack
+                    status: todo
                     desc: >
-                      Create an RTCRtpSender, sender, from the media description.
+                      Let direction be an RTCRtpTransceiverDirection value
+                      representing the direction from the media description,
+                      but with the send and receive directions reversed to
+                      represent this peer's point of view.
 
                   - step: 2
                     status: tested
                     files:
-                      - RTCPeerConnection-ontrack
+                      - RTCPeerConnection-setDescription-transceiver
                     desc: >
-                      Create an RTCRtpReceiver, receiver, from the media
-                      description.
+                      As described by [JSEP] (section 5.9.), attempt to find an
+                      existing RTCRtpTransceiver object, transceiver, to
+                      represent the media description.
 
                   - step: 3
+                    status: todo
+                    desc: >
+                      If no suitable transceiver is found (transceiver is unset),
+                      run the following steps
+                    steps:
+                      - step: 1
+                        status: tested
+                        files:
+                          - RTCPeerConnection-ontrack
+                        desc: >
+                          Create an RTCRtpSender, sender, from the media
+                          description.
+
+                      - step: 2
+                        status: tested
+                        files:
+                          - RTCPeerConnection-ontrack
+                        desc: >
+                          Create an RTCRtpReceiver, receiver, from the media
+                          description.
+
+                      - step: 3
+                        status: todo
+                        desc: >
+                          Create an RTCRtpTransceiver with sender, receiver and
+                          direction set to "recvonly", and let transceiver be
+                          the result.
+                  - step: 4
                     status: tested
                     files:
                       - RTCPeerConnection-ontrack
                     desc: >
-                      Create an RTCRtpTransceiver with sender, receiver and
-                      direction, and let transceiver be the result.
+                      Set transceiver's mid value to the mid of the
+                      corresponding media description.
 
+                  - step: 4
+                    status: todo
+                    desc: >
+                      If the media description has no MID, and transceiver's
+                      mid is unset, generate a random value as described in
+                      [JSEP] (section 5.9.).
+
+                  - step: 5
+                    status: todo
+                    desc: >
+                      If direction is "sendrecv" or "recvonly", and transceiver's
+                      [[CurrentDirection]] slot is neither "sendrecv" nor
+                      "recvonly", process the addition of a remote track for the
+                      media description, given transceiver and trackEvents.
+
+                  - step: 6
+                    status: todo
+                    desc: >
+                      If direction is "sendonly" or "inactive", and transceiver's
+                      [[CurrentDirection]] slot is neither "sendonly" nor
+                      "inactive", process the removal of a remote track for the
+                      media description, given transceiver.
+
+                  - step: 7
+                    status: todo
+                    desc: >
+                      If description is of type "answer" or "pranswer", set
+                      transceiver's [[CurrentDirection]] slot to direction.
+
+                  - step: 8
+                    status: todo
+                    desc: >
+                      If the media description is rejected, and transceiver is
+                      not already stopped, stop the RTCRtpTransceiver
+                      transceiver.
               - step: 3
-                status: tested
-                files:
-                  - RTCPeerConnection-ontrack
-                desc: >
-                  Set transceiver's mid value to the mid of the corresponding
-                  media description.
-
-              - step: 3
-                status: untestable
-                desc: >
-                  If the media description has no MID, and transceiver's mid is
-                  unset, generate a random value as described in [JSEP]
-                  (section 5.9.).
-
-              - step: 4
-                status: tested
-                files:
-                  - RTCPeerConnection-ontrack
-                desc: >
-                  If the direction of the media description is sendrecv or
-                  sendonly, and transceiver.receiver.track has not yet been
-                  fired in a track event, process the remote track for the
-                  media description, given transceiver.
-
-              - step: 5
                 status: todo
                 desc: >
-                  If the media description is rejected, and transceiver is not
-                  already stopped, stop the RTCRtpTransceiver transceiver.
+                  For each RTCTrackEvent trackEvent in trackEvents, fire a track
+                  event named track with trackEvent at the connection object.
 
           - step: 9
             status: todo
@@ -378,10 +451,11 @@ steps:
           - step: 10
             status: tested
             desc: >
-              If connection's signaling state is now stable, update the
+              If connection's signaling state is now "stable", update the
               negotiation-needed flag. If connection's [[NegotiationNeeded]]
               slot was true both before and after this update, queue a task
               that runs the following steps
+
             steps:
               - step: 1
                 status: untestable

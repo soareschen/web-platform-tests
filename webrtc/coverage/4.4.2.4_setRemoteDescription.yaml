@@ -1,16 +1,20 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20170605/webrtc.html
-section: 4.3.2
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+section: 4.4.2
 desc: setRemoteDescription
 steps:
   - status: tested
+    files:
+      - RTCPeerConnection-setRemoteDescription-offer
+      - RTCPeerConnection-setRemoteDescription-answer
+      - RTCPeerConnection-setRemoteDescription-pranswer
+      - RTCPeerConnection-setRemoteDescription-rollback
     desc: >
       When the method is invoked, the user agent MUST return the result of
       setting the RTCSessionDescription indicated by the method's first argument.
 
-  - status: trivial
+  - status: tested
     files:
-      - RTCPeerConnection-setRemoteDescription-offer
-      - RTCPeerConnection-setRemoteDescription-answer
+      - RTCPeerConnection-peerIdentity
     desc: >
       In addition, a remote description is processed to determine and verify the
       identity of the peer.
@@ -20,7 +24,7 @@ steps:
       - RTCPeerConnection-peerIdentity
     desc: >
       If an a=identity attribute is present in the session description, the
-      browser validates the identity assertion..
+      browser validates the identity assertion.
 
   - status: tested
     files:
@@ -41,11 +45,14 @@ steps:
     files:
       RTCPeerConnection-peerIdentity
     desc: >
-      The target peer identity cannot be changed once set. Once set, if a
-      different value is provided, the user agent MUST reject the returned
-      promise with a newly created InvalidModificationError and abort this
-      operation. The RTCPeerConnection MUST be closed if the validated peer
-      identity does not match the target peer identity.
+      The target peer identity cannot be changed once set.
+
+      Once set, if a different value is provided, the user agent MUST reject the
+      returned promise with a newly created InvalidModificationError and abort
+      this operation.
+
+      The RTCPeerConnection MUST be closed if the validated peer identity does 
+      not match the target peer identity.
 
   - status: tested
     files:
