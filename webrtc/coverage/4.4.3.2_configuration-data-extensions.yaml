@@ -1,0 +1,27 @@
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+section: 4.4.3.2
+desc: Configuration data extensions
+steps:
+  - status: todo
+    desc: >
+      offerToReceiveAudio
+
+      When this is given a non-false value, no outgoing track of type "audio"
+      is attached to the PeerConnection, and the existing localDescription
+      (if any) doesn't contain any sendrecv or recv audio media sections,
+      createOffer() will behave as if addTransceiver("audio") had been called
+      once prior to the createOffer() call.
+
+      In all other situations, it will be disregarded.
+
+  - status: todo
+    desc: >
+      offerToReceiveVideo
+
+      When this is given a non-false value, and no outgoing track of type
+      "video" is attached to the PeerConnection, and the existing
+      localDescription (if any) doesn't contain any sendecv or recv video media
+      sections, createOffer() will behave as if addTransceiver("video") had been
+      called prior to the createOffer() call.
+
+      In all other situations, it will be disregarded. 
