@@ -1,4 +1,4 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.4.1.6
 desc: Set the RTCSessionSessionDescription
 steps:
@@ -18,7 +18,7 @@ steps:
         status: trivial
         desc: >
           If the process to apply description fails for any reason, then
-          user agent MUST queue a task that runs the following steps
+          user agent MUST queue a task that runs the following steps.
         steps:
           - step: 1
             status: untestable
@@ -256,7 +256,7 @@ steps:
                   - step: 2
                     status: untestable
                     desc: >
-                      Set channel's readyState attribute to "closed".
+                      Set channel's [[ReadyState]] slot to "closed".
 
                   - step: 3
                     status: untestable
@@ -307,7 +307,50 @@ steps:
                   RTCRtpTransceiverDirection value representing the direction of
                   the corresponding media description.
 
-            - step: 8
+              - step: 5
+                status: todo
+                desc: >
+                   If the media description is indicated as using an existing
+                   media transport according to [BUNDLE], let transport and
+                   rtcpTransport be the RTCDtlsTransport objects representing
+                   the RTP and RTCP components of that transport, respectively.
+
+              - step: 6
+                status: todo
+                desc: >
+                  Otherwise, let transport and rtcpTransport be newly created
+                  RTCDtlsTransport objects, each with a new underlying
+                  RTCIceTransport.
+
+                  Though if RTCP multiplexing is negotiated according to
+                  [RFC5761], or if connection's RTCRtcpMuxPolicy is require, do
+                  not create any RTCP-specific transport objects, and instead
+                  let rtcpTransport equal transport.
+
+              - step: 7
+                status: todo
+                desc: >
+                  Set transceiver.[[Sender]].[[SenderTransport]] to transport.
+
+              - step: 8
+                status: todo
+                desc: >
+                  Set transceiver.[[Sender]].[[SenderRtcpTransport]] to
+                  rtcpTransport.
+
+              - step: 9
+                status: todo
+                desc: >
+                  Set transceiver.[[Receiver]].[[ReceiverTransport]] to
+                  transport.
+
+              - step: 10
+                status: todo
+                desc: >
+                  Set transceiver.[[Receiver]].[[ReceiverRtcpTransport]] to
+                  rtcpTransport.
+
+          - step: 8
             status: tested
             files:
               - RTCPeerConnection-ontrack
@@ -405,8 +448,48 @@ steps:
                   - step: 7
                     status: todo
                     desc: >
-                      If description is of type "answer" or "pranswer", set
-                      transceiver's [[CurrentDirection]] slot to direction.
+                      If description is of type "answer" or "pranswer", then run
+                      the following steps.
+                    steps:
+
+                      - step: 1
+                        status: todo
+                        desc: >
+                          Set transceiver's [[CurrentDirection]] slot to
+                          direction.
+
+                      - step: 2
+                        status: todo
+                        desc: >
+                          Let transport and rtcpTransport be the
+                          RTCDtlsTransport objects representing the RTP and RTCP
+                          components of the media transport used by
+                          transceiver's associated media description, according
+                          to [BUNDLE].
+
+                      - step: 3
+                        status: todo
+                        desc: >
+                          Set transceiver.[[Sender]].[[SenderTransport]] to
+                          transport.
+
+                      - step: 4
+                        status: todo
+                        desc: >
+                          Set transceiver.[[Sender]].[[SenderRtcpTransport]] to
+                          rtcpTransport.
+
+                      - step: 5
+                        status: todo
+                        desc: >
+                           Set transceiver.[[Receiver]].[[ReceiverTransport]] to
+                           transport.
+
+                      - step: 6
+                        status: todo
+                        desc: >
+                           Set transceiver.[[Receiver]].[[ReceiverRtcpTransport]]
+                           to rtcpTransport.
 
                   - step: 8
                     status: todo
@@ -414,6 +497,7 @@ steps:
                       If the media description is rejected, and transceiver is
                       not already stopped, stop the RTCRtpTransceiver
                       transceiver.
+
               - step: 3
                 status: todo
                 desc: >

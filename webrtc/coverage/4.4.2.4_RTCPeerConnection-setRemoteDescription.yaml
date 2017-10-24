@@ -1,4 +1,4 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.4.2
 desc: setRemoteDescription
 steps:
@@ -51,7 +51,7 @@ steps:
       returned promise with a newly created InvalidModificationError and abort
       this operation.
 
-      The RTCPeerConnection MUST be closed if the validated peer identity does 
+      The RTCPeerConnection MUST be closed if the validated peer identity does
       not match the target peer identity.
 
   - status: tested

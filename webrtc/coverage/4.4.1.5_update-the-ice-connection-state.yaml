@@ -1,4 +1,4 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.4.1.5
 desc: Update the ICE connection state
 steps:
@@ -17,8 +17,8 @@ steps:
         files:
           - RTCPeerConnection-iceConnectionState
         desc: >
-        Let newState be the value of deriving a new state value as described by
-        the RTCIceConnectionState enum.
+          Let newState be the value of deriving a new state value as described by
+          the RTCIceConnectionState enum.
 
       - step: 3
         status: untestable

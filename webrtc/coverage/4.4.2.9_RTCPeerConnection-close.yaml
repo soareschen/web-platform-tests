@@ -1,4 +1,4 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.4.2
 desc: close
 steps:
@@ -70,20 +70,33 @@ steps:
         status: todo
         desc: >
           Set transceiver's [[Stopped]] slot to true.
+
   - step: 6
+    status: todo
+    desc: >
+      Set the [[ReadyState]] slot of each of connection's RTCDataChannel s to
+      "closed".
+
+  - step: 7
+    status: todo
+    desc: >
+      Set the [[SctpTransportState]] slot of each of connection's
+      RTCSctpTransport s to "closed".
+
+  - step: 8
     status: todo
     desc: >
       Set the [[DtlsTransportState]] slot of each of connection's
       RTCDtlsTransport s to "closed".
 
-  - step: 7
+  - step: 9
     status: untestable
     desc: >
       Destroy connection's ICE Agent, abruptly ending any active ICE processing
       and releasing any relevant resources (e.g. TURN permissions).
 
-  - step: 8
+  - step: 10
     status: todo
     desc: >
-      Set the [[IceTransportState]] slot of each of connection's 
+      Set the [[IceTransportState]] slot of each of connection's
       RTCIceTransports to "closed".

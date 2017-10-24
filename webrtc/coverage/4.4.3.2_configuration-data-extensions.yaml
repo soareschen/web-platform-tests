@@ -1,16 +1,17 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.4.3.2
-desc: Configuration data extensions
+desc: Legacy configuration extensions
 steps:
   - status: todo
     desc: >
       offerToReceiveAudio
 
-      When this is given a non-false value, no outgoing track of type "audio"
-      is attached to the PeerConnection, and the existing localDescription
-      (if any) doesn't contain any sendrecv or recv audio media sections,
-      createOffer() will behave as if addTransceiver("audio") had been called
-      once prior to the createOffer() call.
+      Whenever this is given a non-false value, and the RTCPeerConnection has no
+      non-stopped "sendrecv" or "recvonly" audio transceivers, createOffer()
+      MUST as its first step invoke the equivalent of addTransceiver("audio") on
+      the RTCPeerConnection object, except that this MUST NOT Update the
+      negotiation-needed flag, and, provided this does not fail, proceed with
+      createOffer()'s regular steps.
 
       In all other situations, it will be disregarded.
 
@@ -18,10 +19,11 @@ steps:
     desc: >
       offerToReceiveVideo
 
-      When this is given a non-false value, and no outgoing track of type
-      "video" is attached to the PeerConnection, and the existing
-      localDescription (if any) doesn't contain any sendecv or recv video media
-      sections, createOffer() will behave as if addTransceiver("video") had been
-      called prior to the createOffer() call.
+      Whenever this is given a non-false value, and the RTCPeerConnection has no
+      non-stopped "sendrecv" or "recvonly" video transceivers, createOffer()
+      MUST as its first step invoke the equivalent of addTransceiver("video") on
+      the RTCPeerConnection object, except that this MUST NOT Update the
+      negotiation-needed flag, and, provided this does not fail, proceed with
+      createOffer()'s regular steps.
 
-      In all other situations, it will be disregarded. 
+      In all other situations, it will be disregarded.

@@ -1,4 +1,4 @@
-spec_url: https://w3c.github.io/webrtc-pc/archives/20171002/webrtc.html
+spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 4.10.2
 desc: >
   The RTCCertificate object can be stored and retrieved from persistent storage
