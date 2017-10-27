@@ -2,12 +2,12 @@ spec_url: https://w3c.github.io/webrtc-pc/archives/20171023/webrtc.html
 section: 10.4.3
 desc: Protection Afforded by Media Isolation
 steps:
-    - status: untestable
-      desc: >
-        Media isolation ensures that the content of a MediaStreamTrack is not
-        accessible to web applications. However, to ensure that media with a
-        peerIdentity option set can be sent to peers, some meta-information
-        about the media will be exposed to applications.
+  - status: untestable
+    desc: >
+      Media isolation ensures that the content of a MediaStreamTrack is not
+      accessible to web applications. However, to ensure that media with a
+      peerIdentity option set can be sent to peers, some meta-information
+      about the media will be exposed to applications.
 
   - status: untestable
     desc: >

@@ -16,9 +16,9 @@ steps:
       result, return result, and abort these steps.
 
   - step: 3
-  files:
-    - RTCPeerConnection-getStats
-    - RTCRtpSender-getStats
+    files:
+      - RTCPeerConnection-getStats
+      - RTCRtpSender-getStats
     desc: >
       If selector is an RTCRtpSender, gather stats for and add the following
       objects to result.

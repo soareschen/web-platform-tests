@@ -18,7 +18,7 @@ steps:
     status: trivial
     desc: >
       Execute the sub step that corresponds to the type of the methods argument.
-    - steps:
+    steps:
       - status: tested
         files:
           RTCDataChannel-send
