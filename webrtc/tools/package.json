@@ -1,0 +1,13 @@
+{
+  "description": "Scripts to compute test coverage for WebRTC",
+  "dependencies": {
+    "js-yaml": "^3.10.0"
+  },
+  "scripts": {
+    "overview": "node overview.js"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "private": true
+}
