@@ -5,6 +5,8 @@ const path = require('path')
 const util = require('util')
 const yaml = require('js-yaml')
 
+const { sortFilePaths } = require('./sort')
+
 const readFile = util.promisify(fs.readFile)
 const readDir = util.promisify(fs.readdir)
 
@@ -30,8 +32,9 @@ const mapAsync = async (list, mapper) => {
 
 const loadDir = async dirPath => {
   const files = await readDir(dirPath)
-  const yamlFiles = files.filter(
-    filePath => (path.extname(filePath) === '.yaml'))
+  const yamlFiles = sortFilePaths(
+    files.filter(filePath =>
+      (path.extname(filePath) === '.yaml')))
 
   const reports = await mapAsync(yamlFiles,
     filePath => loadFile(path.join(dirPath, filePath)))

@@ -4,7 +4,9 @@
     "js-yaml": "^3.10.0"
   },
   "scripts": {
-    "overview": "node overview.js"
+    "overview": "node scripts/overview.js",
+    "show-todo": "node scripts/show-todo.js",
+    "coverage-by-section": "node scripts/coverage-by-section.js"
   },
   "engines": {
     "node": ">=8.0.0"
