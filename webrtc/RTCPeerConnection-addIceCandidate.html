@@ -2,6 +2,7 @@
 <title>Test RTCPeerConnection.prototype.addIceCandidate</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -140,7 +141,7 @@ a=rtcp-rsize
   // null can be accidentally passed from onicecandidate event handler
   // when null is used to indicate end of candidate
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -155,7 +156,7 @@ a=rtcp-rsize
             newly created InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return promise_rejects(t, 'InvalidStateError',
       pc.addIceCandidate({
@@ -168,7 +169,7 @@ a=rtcp-rsize
     Success cases
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -178,7 +179,7 @@ a=rtcp-rsize
   }, 'Add ICE candidate after setting remote description should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate(new RTCIceCandidate({
@@ -188,14 +189,14 @@ a=rtcp-rsize
   }, 'Add ICE candidate with RTCIceCandidate should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
       .then(() => pc.addIceCandidate({ sdpMid }));
   }, 'Add candidate with only valid sdpMid should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
       .then(() => pc.addIceCandidate({ sdpMLineIndex }));
@@ -210,7 +211,7 @@ a=rtcp-rsize
         3.  Add candidate to remoteDescription.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -224,7 +225,7 @@ a=rtcp-rsize
   }, 'addIceCandidate with first sdpMid and sdpMLineIndex add candidate to first media stream');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -240,7 +241,7 @@ a=rtcp-rsize
   }, 'addIceCandidate with second sdpMid and sdpMLineIndex should add candidate to second media stream');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -255,7 +256,7 @@ a=rtcp-rsize
   }, 'Add candidate for first media stream with null ufrag should add candidate to first media stream');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -289,7 +290,7 @@ a=rtcp-rsize
           3.  Add candidate to remoteDescription.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -316,7 +317,7 @@ a=rtcp-rsize
           with a newly created TypeError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -329,7 +330,7 @@ a=rtcp-rsize
   }, 'Add candidate with both sdpMid and sdpMLineIndex manually set to null should reject with TypeError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -340,7 +341,7 @@ a=rtcp-rsize
   }, 'Add candidate with only valid candidate string should reject with TypeError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -353,7 +354,7 @@ a=rtcp-rsize
   }, 'Add candidate with invalid candidate string and both sdpMid and sdpMLineIndex null should reject with TypeError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -362,7 +363,7 @@ a=rtcp-rsize
   }, 'Add candidate with empty dict should reject with TypeError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -383,7 +384,7 @@ a=rtcp-rsize
             created OperationError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -403,7 +404,7 @@ a=rtcp-rsize
             with a newly created OperationError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -418,7 +419,7 @@ a=rtcp-rsize
   // There is an "Else" for the statement:
   // "Else, if candidate.sdpMLineIndex is not null, ..."
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -430,7 +431,7 @@ a=rtcp-rsize
   }, 'Invalid sdpMLineIndex should be ignored if valid sdpMid is provided');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() => pc.addIceCandidate({
@@ -453,7 +454,7 @@ a=rtcp-rsize
             OperationError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -473,7 +474,7 @@ a=rtcp-rsize
             the value OperationError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>
@@ -485,7 +486,7 @@ a=rtcp-rsize
   }, 'Add candidate with invalid candidate string should reject with OperationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(sessionDesc)
     .then(() =>

@@ -3,6 +3,7 @@
 <title>RTCPeerConnection.getDefaultIceServers</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -34,7 +35,7 @@
       };
    */
 
-  test(() => {
+  test(t => {
     const iceServers = RTCPeerConnection.getDefaultIceServers();
 
     assert_true(Array.isArray(iceServers),
@@ -79,7 +80,7 @@
     }
 
     // Expect default ice servers to be accepted as valid configuration
-    const pc = new RTCPeerConnection({ iceServers });
+    const pc = makePeerConnection(t, { iceServers });
 
     // Only make sure there are same number of ice servers configured
     // and not do any deep equality checking

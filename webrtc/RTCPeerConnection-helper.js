@@ -14,6 +14,12 @@
  *    Test promise that never resolve
  */
 
+function makePeerConnection(t, config) {
+  const pc = new RTCPeerConnection(config);
+  t.add_cleanup(() => pc.close());
+  return pc;
+}
+
 const audioLineRegex = /\r\nm=audio.+\r\n/g;
 const videoLineRegex = /\r\nm=video.+\r\n/g;
 const applicationLineRegex = /\r\nm=application.+\r\n/g;
@@ -258,8 +264,9 @@ function doSignalingHandshake(localPc, remotePc) {
 // ICE candidate exchange, and waiting for data channel at two
 // end points to open.
 function createDataChannelPair(
-  pc1=new RTCPeerConnection(),
-  pc2=new RTCPeerConnection())
+  t,
+  pc1 = makePeerConnection(t),
+  pc2 = makePeerConnection(t))
 {
   const channel1 = pc1.createDataChannel('');
 
@@ -384,12 +391,18 @@ function generateMediaStreamTrack(kind) {
 // Return Promise of pair of track and associated mediaStream.
 // Assumes that there is at least one available device
 // to generate the track.
-function getTrackFromUserMedia(kind) {
+function getTrackFromUserMedia(t, kind) {
   return navigator.mediaDevices.getUserMedia({ [kind]: true })
   .then(mediaStream => {
     const tracks = mediaStream.getTracks();
     assert_greater_than(tracks.length, 0,
       `Expect getUserMedia to return at least one track of kind ${kind}`);
+
+    // clean up all tracks after test ended
+    for (const track of tracks) {
+      t.add_cleanup(() => track.stop())
+    }
+
     const [ track ] = tracks;
     return [track, mediaStream];
   });
@@ -400,14 +413,14 @@ function getTrackFromUserMedia(kind) {
 // resolved with a pair of arrays [tracks, streams].
 // Assumes there is at least one available device to generate the tracks and
 // streams and that the getUserMedia() calls resolve.
-function getUserMediaTracksAndStreams(count, type = 'audio') {
+function getUserMediaTracksAndStreams(t, count, type = 'audio') {
   let otherTracksPromise;
   if (count > 1)
-    otherTracksPromise = getUserMediaTracksAndStreams(count - 1, type);
+    otherTracksPromise = getUserMediaTracksAndStreams(t, count - 1, type);
   else
     otherTracksPromise = Promise.resolve([[], []]);
   return otherTracksPromise.then(([tracks, streams]) => {
-    return getTrackFromUserMedia(type)
+    return getTrackFromUserMedia(t, type)
     .then(([track, stream]) => {
       // Remove the default stream-track relationship.
       stream.removeTrack(track);

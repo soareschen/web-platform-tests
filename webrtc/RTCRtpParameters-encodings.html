@@ -3,6 +3,7 @@
 <title>RTCRtpParameters encodings</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="dictionary-helper.js"></script>
 <script src="RTCRtpParameters-helper.js"></script>
 <script>
@@ -114,8 +115,8 @@
           Otherwise, set it to a list containing a single RTCRtpEncodingParameters
           with active set to true.
    */
-  test(() => {
-    const pc = new RTCPeerConnection();
+  test(t => {
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const param = transceiver.sender.getParameters();
     validateSenderRtpParameters(param);
@@ -125,8 +126,8 @@
     assert_equals(encoding.active, true);
   }, 'addTransceiver() with undefined sendEncodings should have default encoding parameter with active set to true');
 
-  test(() => {
-    const pc = new RTCPeerConnection();
+  test(t => {
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio', { sendEncodings: [] });
 
     const param = transceiver.sender.getParameters();
@@ -151,8 +152,8 @@
     5.2.  getParameters
       - encodings is set to the value of the [[send encodings]] internal slot.
    */
-  test(() => {
-    const pc = new RTCPeerConnection();
+  test(t => {
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio', {
       sendEncodings: [{
         dtx: 'enabled',
@@ -191,7 +192,7 @@
           to transactionId.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -209,7 +210,7 @@
   }, `sender.setParameters() with mismatch number of encodings should reject with InvalidModificationError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -222,7 +223,7 @@
   }, `sender.setParameters() with encodings unset should reject with InvalidModificationError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
 
     const param = sender.getParameters();
@@ -244,7 +245,7 @@
   }, `setParameters() with modified encoding.ssrc field should reject with InvalidModificationError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
 
     const param = sender.getParameters();
@@ -266,7 +267,7 @@
   }, `setParameters() with modified encoding.rtx field should reject with InvalidModificationError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
 
     const param = sender.getParameters();
@@ -288,7 +289,7 @@
   }, `setParameters() with modified encoding.fec field should reject with InvalidModificationError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio', {
       sendEncodings: [{ rid: 'foo' }],
     });
@@ -312,7 +313,7 @@
           a newly created RangeError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
 
     const param = sender.getParameters();
@@ -326,7 +327,7 @@
   }, `setParameters() with encoding.scaleResolutionDownBy field set to less than 1.0 should reject with RangeError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
 
     const param = sender.getParameters();
@@ -348,7 +349,7 @@
   // Helper function to test that modifying an encoding field should succeed
   function test_modified_encoding(field, value1, value2, desc) {
     promise_test(t => {
-      const pc = new RTCPeerConnection();
+      const pc = makePeerConnection(t);
       const { sender } = pc.addTransceiver('audio', {
         sendEncodings: [{
           [field]: value1

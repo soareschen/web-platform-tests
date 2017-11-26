@@ -54,7 +54,7 @@
       unrecognized.
    */
   promise_test(t => {
-    return createDtmfSender()
+    return createDtmfSender(t)
     .then(dtmfSender => {
       dtmfSender.insertDTMF('');
       dtmfSender.insertDTMF('012345689');
@@ -73,7 +73,7 @@
           InvalidCharacterError.
    */
   promise_test(t => {
-    return createDtmfSender()
+    return createDtmfSender(t)
     .then(dtmfSender => {
       assert_throws('InvalidCharacterError', () =>
         // 'F' is invalid
@@ -94,7 +94,7 @@
       3.  If transceiver.stopped is true, throw an InvalidStateError.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const dtmfSender = transceiver.sender.dtmf;
 
@@ -108,7 +108,7 @@
       4.  If transceiver.currentDirection is recvonly or inactive, throw an InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio', {
       direction: 'recvonly'
     });
@@ -125,7 +125,7 @@
   }, 'insertDTMF() should throw InvalidStateError if transceiver.currentDirection is recvonly');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio', {
       direction: 'inactive'
     });
@@ -148,8 +148,8 @@
 
       7.  Set the object's toneBuffer attribute to tones.
    */
-  promise_test(() => {
-    return createDtmfSender()
+  promise_test(t => {
+    return createDtmfSender(t)
     .then(dtmfSender => {
       dtmfSender.insertDTMF('123');
       assert_equals(dtmfSender.toneBuffer, '123');

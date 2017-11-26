@@ -50,12 +50,12 @@
         no transports.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     assert_equals(pc.iceGatheringState, 'new');
   }, 'Initial iceGatheringState should be new');
 
   async_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const onIceGatheringStateChange = t.step_func(() => {
       const { iceGatheringState } = pc;
@@ -96,8 +96,8 @@
         again until an ICE restart causes it to restart.
    */
   async_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     const onIceGatheringStateChange = t.step_func(() => {
       const { iceGatheringState } = pc2;

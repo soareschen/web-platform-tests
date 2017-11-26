@@ -3,6 +3,7 @@
 <title>RTCDataChannelEvent constructor</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
 test(function() {
     assert_equals(RTCDataChannelEvent.length, 2);
@@ -26,8 +27,8 @@ test(function() {
     );
 }, 'RTCDataChannelEvent constructor with a channel passed as undefined.');
 
-test(function() {
-    var pc = new RTCPeerConnection();
+test(t => {
+    var pc = makePeerConnection(t);
     var c = pc.createDataChannel('');
     var e = new RTCDataChannelEvent('type', { channel: c });
     assert_true(e instanceof RTCDataChannelEvent);

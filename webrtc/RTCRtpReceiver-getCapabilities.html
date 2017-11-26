@@ -3,6 +3,7 @@
 <title>RTCRtpReceiver.getCapabilities</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="dictionary-helper.js"></script>
 <script src="RTCRtpCapabilities-helper.js"></script>
 <script>
@@ -21,12 +22,12 @@
         static RTCRtpCapabilities getCapabilities(DOMString kind);
       };
    */
-  test(() => {
+  test(t => {
     const capabilities = RTCRtpReceiver.getCapabilities('audio');
     validateRtpCapabilities(capabilities);
   }, `RTCRtpSender.getCapabilities('audio') should return RTCRtpCapabilities dictionary`);
 
-  test(() => {
+  test(t => {
     const capabilities = RTCRtpReceiver.getCapabilities('video');
     validateRtpCapabilities(capabilities);
   }, `RTCRtpSender.getCapabilities('video') should return RTCRtpCapabilities dictionary`);

@@ -96,7 +96,7 @@
   // tests that ontrack is called and parses the msid information from the SDP and creates
   // the streams with matching identifiers.
   async_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     // Fail the test if the ontrack event handler is not implemented
     assert_idl_attribute(pc, 'ontrack', 'Expect pc to have ontrack event handler attribute');
@@ -149,7 +149,7 @@ a=ssrc:1001 cname:some
   }, 'setRemoteDescription should trigger ontrack event when the MSID of the stream is is parsed.');
 
   async_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'ontrack', 'Expect pc to have ontrack event handler attribute');
 
@@ -186,8 +186,8 @@ a=ssrc:1001 cname:some
   }, 'setRemoteDescription() with m= line of recvonly direction should not trigger track event');
 
   async_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     pc2.ontrack = t.step_func(trackEvent => {
       const { track } = trackEvent;
@@ -200,7 +200,7 @@ a=ssrc:1001 cname:some
       t.done();
     });
 
-    return getTrackFromUserMedia('audio')
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
       pc1.addTrack(track, mediaStream);
 
@@ -214,8 +214,8 @@ a=ssrc:1001 cname:some
   }, 'addTrack() should cause remote connection to fire ontrack when setRemoteDescription()');
 
   async_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     pc2.ontrack = t.step_func(trackEvent => {
       const { track } = trackEvent;
@@ -239,8 +239,8 @@ a=ssrc:1001 cname:some
   }, `addTransceiver('video') should cause remote connection to fire ontrack when setRemoteDescription()`);
 
   async_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     pc2.ontrack = t.step_func(trackEvent => {
       const { track } = trackEvent;

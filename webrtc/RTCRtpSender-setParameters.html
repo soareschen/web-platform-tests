@@ -3,6 +3,7 @@
 <title>RTCRtpSender.prototype.setParameters</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -15,7 +16,7 @@
             rejected with a newly created InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { sender } = transceiver;
 

@@ -60,7 +60,7 @@
           Finally set connection's signaling state to stable.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-remote-offer', 'stable']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
@@ -89,7 +89,7 @@
           to lastAnswer.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer({ offerToReceiveVideo: true })
     .then(offer =>
@@ -118,7 +118,7 @@
           steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer({ offerToReceiveVideo: true })
     .then(offer =>
@@ -140,7 +140,7 @@
            state MUST be either "have-remote-offer" or "have-local-pranswer".
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer()
     .then(offer =>
@@ -150,7 +150,7 @@
   }, 'Calling setLocalDescription(answer) from stable state should reject with InvalidStateError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer()
     .then(offer =>

@@ -28,7 +28,7 @@
       4.  Set transceiver's [[Direction]] slot to newDirection.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     assert_equals(transceiver.direction, 'sendrecv');
     assert_equals(transceiver.currentDirection, null);
@@ -46,7 +46,7 @@
           these steps.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio', { direction: 'sendonly' });
     assert_equals(transceiver.direction, 'sendonly');
     transceiver.setDirection('sendonly');
@@ -55,7 +55,7 @@
   }, 'setDirection with same direction should have no effect');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio', { direction: 'recvonly' });
     assert_equals(transceiver.direction, 'recvonly');
     assert_equals(transceiver.currentDirection, null);

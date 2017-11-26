@@ -40,7 +40,7 @@
    */
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     assert_equals(pc.sctp, null);
     pc.createDataChannel('test');
 
@@ -64,7 +64,7 @@
   }, 'setRemoteDescription() with answer containing data media should initialize pc.sctp');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     assert_equals(pc.sctp, null);
 
     return generateOffer({ pc, data: true })

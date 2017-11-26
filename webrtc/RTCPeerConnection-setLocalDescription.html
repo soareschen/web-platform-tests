@@ -45,7 +45,7 @@
    */
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-local-offer', 'stable', 'have-local-offer']);
 
     return pc.createOffer({ offerToReceiveAudio: true })
@@ -69,7 +69,7 @@
   }, 'Calling createOffer() and setLocalDescription() again after one round of local-offer/remote-answer should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc,
       ['have-remote-offer', 'stable', 'have-local-offer']);
 

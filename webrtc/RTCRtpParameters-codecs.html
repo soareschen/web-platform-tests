@@ -3,6 +3,7 @@
 <title>RTCRtpParameters codecs</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="dictionary-helper.js"></script>
 <script src="RTCRtpParameters-helper.js"></script>
 <script>
@@ -81,7 +82,7 @@
           to transactionId.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -100,7 +101,7 @@
   }, 'setParameters() with codec.payloadType modified should reject with InvalidModificationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -119,7 +120,7 @@
   }, 'setParameters() with codec.mimeType modified should reject with InvalidModificationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -138,7 +139,7 @@
   }, 'setParameters() with codec.clockRate modified should reject with InvalidModificationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -158,7 +159,7 @@
 
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -178,7 +179,7 @@
 
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -198,7 +199,7 @@
   }, 'setParameters() with new codecs inserted should reject with InvalidModificationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);
@@ -217,7 +218,7 @@
   }, 'setParameters with reordered codecs should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const { sender } = pc.addTransceiver('audio');
     const param = sender.getParameters();
     validateSenderRtpParameters(param);

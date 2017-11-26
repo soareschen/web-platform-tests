@@ -57,7 +57,7 @@
           to description and signaling state to have-local-offer.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-local-offer']);
 
     return pc.createOffer({ offerToReceiveAudio: true })
@@ -78,7 +78,7 @@
           to lastOffer.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return pc.createOffer({ offerToReceiveAudio: true })
     .then(offer =>
       pc.setLocalDescription({ type: 'offer' })
@@ -98,7 +98,7 @@
           these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return generateOffer({ pc, data: true })
     .then(offer =>
@@ -111,7 +111,7 @@
     // both audio and video line. Since the second offer is the
     // last offer, setLocalDescription would reject when setting
     // with the first offer
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return pc.createOffer({ offerToReceiveAudio: true })
     .then(offer1 =>
       pc.createOffer({ offerToReceiveVideo: true })
@@ -123,7 +123,7 @@
   }, 'Set created offer other than last offer should reject with InvalidModificationError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     // Only one state change event should be fired
     test_state_change_event(t, pc, ['have-local-offer']);

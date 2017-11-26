@@ -72,7 +72,7 @@
         failed or disconnected state, or all transports are in the closed state.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     assert_equals(pc.connectionState, 'new');
   }, 'Initial connectionState should be new');
 
@@ -106,8 +106,8 @@
         fail on all successful candidate pairs, the state transitions to "failed".
    */
   async_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     const onConnectionStateChange = t.step_func(() => {
       const { connectionState } = pc1;

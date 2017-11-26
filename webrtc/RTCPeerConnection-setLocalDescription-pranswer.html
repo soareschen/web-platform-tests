@@ -62,7 +62,7 @@
            state MUST be either "have-remote-offer" or "have-local-pranswer".
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer()
     .then(offer =>
@@ -80,7 +80,7 @@
           have-local-pranswer.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-remote-offer', 'have-local-pranswer']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
@@ -108,7 +108,7 @@
   }, 'setLocalDescription(pranswer) should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-remote-offer', 'have-local-pranswer']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
@@ -124,7 +124,7 @@
   }, 'setLocalDescription(pranswer) can be applied multiple times while still in have-local-pranswer');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     test_state_change_event(t, pc, ['have-remote-offer', 'have-local-pranswer', 'stable']);
 
     return pc.createOffer({ offerToReceiveVideo: true })

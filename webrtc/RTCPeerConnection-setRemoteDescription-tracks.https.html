@@ -20,9 +20,9 @@
   // states of RTCPeerConnection, MediaStream and MediaStreamTrack.
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       let localTrack = tracks[0];
       caller.addTrack(localTrack);
@@ -43,9 +43,9 @@
   }, 'addTrack() with a track and no stream makes ontrack fire with a track and no stream.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       let localTrack = tracks[0];
       let localStream = streams[0];
@@ -72,9 +72,9 @@
   }, 'addTrack() with a track and a stream makes ontrack fire with a track and a stream.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(2)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 2)
     .then(t.step_func(([tracks, streams]) => {
       let localTrack1 = tracks[0];
       let localTrack2 = tracks[1];
@@ -114,9 +114,9 @@
   }, 'addTrack() with two tracks and one stream makes ontrack fire twice with the tracks and shared stream.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(2)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 2)
     .then(t.step_func(([tracks, streams]) => {
       const localTracks = tracks;
       const localStream = streams[0];
@@ -149,9 +149,9 @@
   }, 'addTrack() for an existing stream makes stream.onaddtrack fire.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(2)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 2)
     .then(t.step_func(([tracks, streams]) => {
       let localTrack = tracks[0];
       let localStreams = streams;
@@ -182,10 +182,10 @@
   }, 'addTrack() with a track and two streams makes ontrack fire with a track and two streams.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
     let eventSequence = '';
-    return getUserMediaTracksAndStreams(1)
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       caller.addTrack(tracks[0]);
       let ontrackResolver = new Resolver();
@@ -210,9 +210,9 @@
   }, 'ontrack fires before setRemoteDescription resolves.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       caller.addTrack(tracks[0]);
       let offerPromise = performOffer(caller, callee);
@@ -228,9 +228,9 @@
   }, 'ontrack\'s receiver matches getReceivers().');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       let sender = caller.addTrack(tracks[0]);
       assert_true(sender != null);
@@ -255,9 +255,9 @@
   }, 'removeTrack() does not remove the receiver.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       let sender = caller.addTrack(tracks[0], streams[0]);
       assert_true(sender != null);
@@ -282,9 +282,9 @@
   }, 'removeTrack() causes onremovetrack and the track to be removed from the stream.');
 
   async_test(t => {
-    const caller = new RTCPeerConnection();
-    const callee = new RTCPeerConnection();
-    return getUserMediaTracksAndStreams(1)
+    const caller = makePeerConnection(t);
+    const callee = makePeerConnection(t);
+    return getUserMediaTracksAndStreams(t, 1)
     .then(t.step_func(([tracks, streams]) => {
       let sender = caller.addTrack(tracks[0]);
       assert_true(sender != null);

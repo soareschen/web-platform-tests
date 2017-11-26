@@ -8,6 +8,7 @@
 -->
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
 /*
 RTCPeerConnectionIceEvent
@@ -19,13 +20,13 @@ interface RTCPeerConnectionIceEvent : Event {
     readonly attribute DOMString?       url;
 };
  */
-test(() => {
+test(t => {
   assert_throws(new TypeError(), () => {
     new RTCPeerConnectionIceEvent();
   });
 }, "RTCPeerConnectionIceEvent with no arguments throws TypeError");
 
-test(() => {
+test(t => {
   const event = new RTCPeerConnectionIceEvent("type");
   /*
   candidate of type RTCIceCandidate, readonly, nullable
@@ -45,7 +46,7 @@ test(() => {
 
 }, "RTCPeerConnectionIceEvent with no eventInitDict (default)");
 
-test(() => {
+test(t => {
   const event = new RTCPeerConnectionIceEvent("type", {});
 
   /*
@@ -66,14 +67,14 @@ test(() => {
 
 }, "RTCPeerConnectionIceEvent with empty object as eventInitDict (default)");
 
-test(() => {
+test(t => {
   const event = new RTCPeerConnectionIceEvent("type", {
     candidate: null
   });
   assert_equals(event.candidate, null);
 }, "RTCPeerConnectionIceEvent.candidate is null when constructed with { candidate: null }");
 
-test(() => {
+test(t => {
   const event = new RTCPeerConnectionIceEvent("type", {
     candidate: undefined
   });
@@ -95,7 +96,7 @@ const sdpMLineIndex = 1;
 const ufrag = "";
 const url = "foo.bar";
 
-test(() => {
+test(t => {
   const iceCandidate = new RTCIceCandidate({ candidate, sdpMid, sdpMLineIndex, ufrag });
   const event = new RTCPeerConnectionIceEvent("type", {
     candidate: iceCandidate,
@@ -107,7 +108,7 @@ test(() => {
   assert_false(event.cancelable);
 }, "RTCPeerConnectionIceEvent with RTCIceCandidate");
 
-test(() => {
+test(t => {
   const plain = { candidate, sdpMid, sdpMLineIndex, ufrag };
   assert_throws(new TypeError(), () => new RTCPeerConnectionIceEvent("type", { candidate: plain }));
 }, "RTCPeerConnectionIceEvent with non RTCIceCandidate object throws");
@@ -116,7 +117,7 @@ test(() => {
 This will remain commented out until https://github.com/w3c/webrtc-pc/issues/1232
 is resolved.
 
-test(() => {
+test(t => {
   // When firing an RTCPeerConnectionIceEvent event that contains a RTCIceCandidate
   // object, it must include values for both sdpMid and sdpMLineIndex.
 
@@ -135,7 +136,7 @@ test(() => {
 }, "RTCIceCandidate must include values for both sdpMid and sdpMLineIndex");
 */
 
-test(() => {
+test(t => {
   const event = new RTCPeerConnectionIceEvent("type", {
     candidate: null,
     bubbles: true,

@@ -38,7 +38,7 @@
       4.  If connection's [[isClosed]] slot is true, throw an InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -65,7 +65,7 @@
           4.  Add transceiver to connection's set of transceivers.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -100,7 +100,7 @@
   }, 'addTrack with single track argument and no mediaStream should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -120,7 +120,7 @@
   }, 'addTrack with single track argument and single mediaStream should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -147,7 +147,7 @@
           InvalidAccessError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -181,7 +181,7 @@
               with sender.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const transceiver = pc.addTransceiver('audio', { direction: 'recvonly' });
     assert_equals(transceiver.sender.track, null);
@@ -198,7 +198,7 @@
   }, 'addTrack with existing sender with null track, same kind, and recvonly direction should reuse sender');
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const transceiver = pc.addTransceiver('audio');
     assert_equals(transceiver.sender.track, null);
@@ -223,7 +223,7 @@
   }, 'addTrack with existing sender with null track, same kind, and sendrecv direction should create new sender');
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const transceiver = pc.addTransceiver('video', { direction: 'recvonly' });
     assert_equals(transceiver.sender.track, null);

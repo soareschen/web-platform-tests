@@ -33,7 +33,6 @@ module.exports = {
     assert_less_than_equal: true,
     assert_approx_equals: true,
 
-
     // WebRTC globals
     RTCPeerConnection: true,
     RTCRtpSender: true,
@@ -87,6 +86,7 @@ module.exports = {
     getTransceiver: true,
 
     // RTCPeerConnection-helper.js
+    makePeerConnection: true,
     countLine: true,
     countAudioLine: true,
     countVideoLine: true,

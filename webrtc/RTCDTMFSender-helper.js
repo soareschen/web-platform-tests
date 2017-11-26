@@ -10,8 +10,8 @@
 //   getTrackFromUserMedia
 
 // Create a RTCDTMFSender using getUserMedia()
-function createDtmfSender(pc = new RTCPeerConnection()) {
-  return getTrackFromUserMedia('audio')
+function createDtmfSender(t, pc = new RTCPeerConnection()) {
+  return getTrackFromUserMedia(t, 'audio')
   .then(([track, mediaStream]) => {
     const sender = pc.addTrack(track, mediaStream);
     const dtmfSender = sender.dtmf;
@@ -48,7 +48,7 @@ function test_tone_change_events(testFunc, toneChanges, desc) {
   async_test(t => {
     const pc = new RTCPeerConnection();
 
-    createDtmfSender(pc)
+    createDtmfSender(t, pc)
     .then(dtmfSender => {
       let lastEventTime = Date.now();
 

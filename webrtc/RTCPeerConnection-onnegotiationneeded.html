@@ -81,7 +81,7 @@
             update the negotiation-needed flag for connection.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     pc.createDataChannel('test');
@@ -89,7 +89,7 @@
   }, 'Creating first data channel should fire negotiationneeded event');
 
   test_never_resolve(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     pc.createDataChannel('foo');
@@ -113,7 +113,7 @@
         9.  Update the negotiation-needed flag for connection.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     pc.addTransceiver('audio');
@@ -126,7 +126,7 @@
       4.  If connection's [[needNegotiation]] slot is already true, abort these steps.
    */
   test_never_resolve(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     pc.addTransceiver('audio');
@@ -143,7 +143,7 @@
       4.  If connection's [[needNegotiation]] slot is already true, abort these steps.
    */
   test_never_resolve(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     pc.createDataChannel('test');
@@ -160,7 +160,7 @@
       2.  If connection's signaling state is not "stable", abort these steps.
    */
   test_never_resolve(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const negotiated = awaitNegotiation(pc);
 
     return pc.createOffer({ offerToReceiveAudio: true })
@@ -182,7 +182,7 @@
         3.  Fire a simple event named negotiationneeded at connection.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return assert_first_promise_fulfill_after_second(
       awaitNegotiation(pc),

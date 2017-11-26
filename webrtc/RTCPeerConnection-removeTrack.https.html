@@ -36,7 +36,7 @@
       3.  If connection's [[isClosed]] slot is true, throw an InvalidStateError.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
     const { sender } = transceiver;
@@ -47,7 +47,7 @@
   }, 'addTransceiver - Calling removeTrack when connection is closed should throw InvalidStateError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -64,19 +64,19 @@
   }, 'addTrack - Calling removeTrack when connection is closed should throw InvalidStateError');
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
     const { sender } = transceiver;
 
-    const pc2 = new RTCPeerConnection();
+    const pc2 = makePeerConnection(t);
     pc2.close();
     assert_throws('InvalidStateError', () => pc2.removeTrack(sender));
 
   }, 'addTransceiver - Calling removeTrack on different connection that is closed should throw InvalidStateError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -87,7 +87,7 @@
       const track = tracks[0];
       const sender = pc.addTrack(track, mediaStream);
 
-      const pc2 = new RTCPeerConnection();
+      const pc2 = makePeerConnection(t);
       pc2.close();
       assert_throws('InvalidStateError', () => pc2.removeTrack(sender));
     });
@@ -98,18 +98,18 @@
       4.  If sender was not created by connection, throw an InvalidAccessError.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
     const { sender } = transceiver;
 
-    const pc2 = new RTCPeerConnection();
+    const pc2 = makePeerConnection(t);
     assert_throws('InvalidAccessError', () => pc2.removeTrack(sender));
 
   }, 'addTransceiver - Calling removeTrack on different connection should throw InvalidAccessError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -120,7 +120,7 @@
       const track = tracks[0];
       const sender = pc.addTrack(track, mediaStream);
 
-      const pc2 = new RTCPeerConnection();
+      const pc2 = makePeerConnection(t);
       assert_throws('InvalidAccessError', () => pc2.removeTrack(sender));
     });
   }, 'addTrack - Calling removeTrack on different connection should throw InvalidAccessError')
@@ -130,7 +130,7 @@
       7.  Set sender.track to null.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
     const { sender } = transceiver;
@@ -147,7 +147,7 @@
   }, 'addTransceiver - Calling removeTrack with valid sender should set sender.track to null');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return navigator.mediaDevices.getUserMedia({ audio: true })
     .then(mediaStream => {
@@ -172,7 +172,7 @@
           to recvonly.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
     const { sender } = transceiver;
@@ -204,7 +204,7 @@
           to inactive.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track, { direction: 'sendonly' });
     const { sender } = transceiver;
@@ -236,7 +236,7 @@
           then abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track, { direction: 'recvonly' });
     const { sender } = transceiver;
@@ -267,7 +267,7 @@
           then abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track, { direction: 'inactive' });
     const { sender } = transceiver;

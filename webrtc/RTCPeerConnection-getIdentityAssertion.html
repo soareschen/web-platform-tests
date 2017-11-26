@@ -3,6 +3,7 @@
 <title>RTCPeerConnection.prototype.getIdentityAssertion</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="identity-helper.js"></script>
 <script>
   'use strict';
@@ -36,8 +37,8 @@
         DOMString peerIdentity;
       };
    */
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     const port = window.location.port;
 
     const [idpDomain] = getIdpDomains();
@@ -95,8 +96,8 @@
 
   // When generating assertion, the RTCPeerConnection doesn't care if the returned assertion
   // represents identity of different domain
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     const port = window.location.port;
 
     const [idpDomain1, idpDomain2] = getIdpDomains();
@@ -137,7 +138,7 @@
         may be JSON.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     assert_equals(pc.idpErrorInfo, null,
       'Expect initial pc.idpErrorInfo to be null');
@@ -166,7 +167,7 @@
         with errorDetail set to "idp-bad-script-failure".
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -190,7 +191,7 @@
           generation fails.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -215,7 +216,7 @@
         HTTP status code of the response.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     pc.setIdentityProvider('nonexistent-origin.web-platform.test', {
       protocol: `non-existent`,
@@ -241,7 +242,7 @@
         of the error set to the URL that can be used to login.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     assert_equals(pc.idpLoginUrl, null,
       'Expect initial pc.idpLoginUrl to be null');
@@ -278,8 +279,8 @@
         value is provided for the peerIdentity member of RTCConfiguration, the value from
         RTCConfiguration is used.
   */
-  promise_test(() => {
-    const pc = new RTCPeerConnection({
+  promise_test(t => {
+    const pc = makePeerConnection(t, {
       peerIdentity: 'bob@example.net'
     });
 
@@ -302,8 +303,8 @@
     9.6.  setIdentityProvider
       3.  If any identity provider value has changed, discard any stored identity assertion.
    */
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
@@ -331,7 +332,7 @@
   }, `Calling setIdentityProvider() multiple times should reset identity assertions`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -357,7 +358,7 @@
           with a newly created NotReadableError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -379,7 +380,7 @@
           with a newly created NotReadableError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -388,7 +389,7 @@
       usernameHint: `alice@${idpDomain}`
     });
 
-    return new RTCPeerConnection()
+    return makePeerConnection(t)
     .createOffer()
     .then(offer => pc.setRemoteDescription(offer))
     .then(() =>

@@ -32,7 +32,7 @@
           with a newly created InvalidStateError and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
 
     const transceiver = pc.addTransceiver('audio');
@@ -51,7 +51,7 @@
           newly created TypeError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('video');
 
     const transceiver = pc.addTransceiver('audio');
@@ -68,7 +68,7 @@
           created InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
 
     const transceiver = pc.addTransceiver('audio');
@@ -87,7 +87,7 @@
           return a promise resolved with undefined.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
 
     const transceiver = pc.addTransceiver('audio');
@@ -101,7 +101,7 @@
   }, 'Calling replaceTrack on sender with null track and not set to session description should resolve with sender.track set to given track');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track1 = generateMediaStreamTrack('audio');
     const track2 = generateMediaStreamTrack('audio');
 
@@ -117,7 +117,7 @@
   }, 'Calling replaceTrack on sender not set to session description should resolve with sender.track set to given track');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
 
     const transceiver = pc.addTransceiver(track);
@@ -143,7 +143,7 @@
               2.  Set sender's track attribute to withTrack.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack('audio');
 
     const transceiver = pc.addTransceiver(track);
@@ -172,7 +172,7 @@
               2.  Set sender's track attribute to withTrack.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track1 = generateMediaStreamTrack('audio');
     const track2 = generateMediaStreamTrack('audio');
 
@@ -203,7 +203,7 @@
               2.  Set sender's track attribute to withTrack.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track1 = generateMediaStreamTrack('audio');
     const track2 = generateMediaStreamTrack('audio');
 

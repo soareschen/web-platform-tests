@@ -58,7 +58,7 @@
           Set connection.pendingRemoteDescription to null and signaling state to stable.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     test_state_change_event(t, pc, ['have-remote-offer', 'stable']);
 
@@ -93,13 +93,13 @@
           previous stable state
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return promise_rejects(t, 'InvalidStateError',
       pc.setRemoteDescription({ type: 'rollback' }));
   }, `setRemoteDescription(rollback) from stable state should reject with InvalidStateError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return pc.createOffer({ offerToReceiveAudio: true })
     .then(offer => pc.setRemoteDescription(offer))
     .then(() => pc.setRemoteDescription({

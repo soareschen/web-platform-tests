@@ -3,6 +3,7 @@
 <title>RTCPeerConnection.prototype.getTransceivers</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -20,7 +21,7 @@
    */
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'getSenders');
     const senders = pc.getSenders();

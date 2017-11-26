@@ -8,6 +8,7 @@
   <!-- These files are in place when executing on W3C. -->
   <script src="/resources/testharness.js"></script>
   <script src="/resources/testharnessreport.js"></script>
+  <script src="RTCPeerConnection-helper.js"></script>
   <script type="text/javascript">
   // tests support for RTCPeerConnection.canTrickleIceCandidates:
   // http://w3c.github.io/webrtc-pc/#dom-rtcpeerconnection-cantrickleicecandidates
@@ -30,13 +31,13 @@
       'a=ssrc:1001 cname:some\r\n' +
       'a=rtpmap:111 opus/48000/2\r\n';
 
-  test(function() {
-    var pc = new RTCPeerConnection();
+  test(t => {
+    var pc = makePeerConnection(t);
     assert_equals(pc.canTrickleIceCandidates, null, 'canTrickleIceCandidates property is null');
   }, 'canTrickleIceCandidates property is null prior to setRemoteDescription');
 
-  promise_test(function() {
-    var pc = new RTCPeerConnection();
+  promise_test(t => {
+    var pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(new RTCSessionDescription({type: 'offer', sdp: sdp}))
     .then(function() {
@@ -44,8 +45,8 @@
     })
   }, 'canTrickleIceCandidates property is true after setRemoteDescription with a=ice-options:trickle');
 
-  promise_test(function() {
-    var pc = new RTCPeerConnection();
+  promise_test(t => {
+    var pc = makePeerConnection(t);
 
     return pc.setRemoteDescription(new RTCSessionDescription({type: 'offer', sdp: sdp.replace('a=ice-options:trickle\r\n', '')}))
     .then(function() {

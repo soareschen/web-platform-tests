@@ -23,7 +23,7 @@
    *        newly created InvalidStateError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return promise_rejects(t, 'InvalidStateError',
       pc.createAnswer());
   }, 'createAnswer() with null remoteDescription should reject with InvalidStateError');
@@ -34,7 +34,7 @@
    *     type member initialized to the string "answer" and its sdp member initialized to sdpString.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.createOffer({ offerToReceiveVideo: true })
     .then(offer => pc.setRemoteDescription(offer))
@@ -49,7 +49,7 @@
   }, 'createAnswer() after setting remote description should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return generateOffer({ pc, data: true })
     .then(offer => pc.setRemoteDescription(offer))

@@ -116,19 +116,19 @@
     idlArray.add_idls(idlText);
 
     idlArray.add_objects({
-      'RTCPeerConnection': [`new RTCPeerConnection()`],
+      'RTCPeerConnection': [`makePeerConnection(t)`],
 
       'RTCSessionDescription': [`new RTCSessionDescription({ type: 'offer' })`],
 
       'RTCIceCandidate': [`new RTCIceCandidate({ sdpMid: 1 })`],
 
-      'RTCDataChannel': [`new RTCPeerConnection().createDataChannel('')`],
+      'RTCDataChannel': [`makePeerConnection(t).createDataChannel('')`],
 
-      'RTCRtpTransceiver': [`new RTCPeerConnection().addTransceiver('audio')`],
+      'RTCRtpTransceiver': [`makePeerConnection(t).addTransceiver('audio')`],
 
-      'RTCRtpSender': [`new RTCPeerConnection().addTransceiver('audio').sender`],
+      'RTCRtpSender': [`makePeerConnection(t).addTransceiver('audio').sender`],
 
-      'RTCRtpReceiver': [`new RTCPeerConnection().addTransceiver('audio').receiver`],
+      'RTCRtpReceiver': [`makePeerConnection(t).addTransceiver('audio').receiver`],
 
       'RTCPeerConnectionIceEvent': [`new RTCPeerConnectionIceEvent('ice')`],
 
@@ -140,7 +140,7 @@
       'RTCErrorEvent': [`new RTCErrorEvent('error')`],
 
       'RTCDataChannelEvent': [`new RTCDataChannelEvent('channel',
-        { channel: new RTCPeerConnection().createDataChannel('') })`],
+        { channel: makePeerConnection(t).createDataChannel('') })`],
 
       // Async initialized objects below
 

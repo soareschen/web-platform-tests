@@ -118,11 +118,11 @@
     validateCandidateParameter(iceTransport.getRemoteParameters());
   }
 
-  promise_test(() => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+  promise_test(t => {
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
-    return createDataChannelPair(pc1, pc2)
+    return createDataChannelPair(t, pc1, pc2)
     .then(([channel1, channel2]) => {
       // Send a ping message and wait for it just to make sure
       // that the connection is fully working before testing
@@ -163,9 +163,9 @@
     });
   }, 'Two connected iceTransports should has matching local/remote candidates returned');
 
-  promise_test(() => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+  promise_test(t => {
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
     pc1.createDataChannel('');
 
     // setRemoteDescription(answer) without the other peer

@@ -2,6 +2,7 @@
 <title>RTCConfiguration iceTransportPolicy</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="RTCConfiguration-helper.js"></script>
 <script>
   'use strict';
@@ -31,25 +32,25 @@
     };
    */
 
-  test(() => {
-    const pc = new RTCPeerConnection();
+  test(t => {
+    const pc = makePeerConnection(t);
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection() should have default iceTransportPolicy all`);
+  }, `makePeerConnection(t) should have default iceTransportPolicy all`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: undefined });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: undefined });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection({ iceTransportPolicy: undefined }) should have default iceTransportPolicy all`);
+  }, `makePeerConnection(t, { iceTransportPolicy: undefined }) should have default iceTransportPolicy all`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: 'all' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: 'all' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection({ iceTransportPolicy: 'all' }) should succeed`);
+  }, `makePeerConnection(t, { iceTransportPolicy: 'all' }) should succeed`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: 'relay' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: 'relay' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'relay');
-  }, `new RTCPeerConnection({ iceTransportPolicy: 'relay' }) should succeed`);
+  }, `makePeerConnection(t, { iceTransportPolicy: 'relay' }) should succeed`);
 
   /*
     4.3.2. Set a configuration
@@ -59,24 +60,24 @@
           will be taken until the next gathering phase. If a script wants this to
           happen immediately, it should do an ICE restart.
    */
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: 'all' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: 'all' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
 
     pc.setConfiguration({ iceTransportPolicy: 'relay' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'relay');
   }, `setConfiguration({ iceTransportPolicy: 'relay' }) with initial iceTransportPolicy all should succeed`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: 'relay' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: 'relay' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'relay');
 
     pc.setConfiguration({ iceTransportPolicy: 'all' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
   }, `setConfiguration({ iceTransportPolicy: 'all' }) with initial iceTransportPolicy relay should succeed`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransportPolicy: 'relay' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransportPolicy: 'relay' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'relay');
 
     // default value for iceTransportPolicy is all
@@ -101,19 +102,19 @@
   }, `with null iceTransportPolicy should throw TypeError`);
 
   // iceTransportPolicy is called iceTransports in Blink.
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransports: 'relay' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransports: 'relay' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection({ iceTransports: 'relay' }) should have no effect`);
+  }, `makePeerConnection(t, { iceTransports: 'relay' }) should have no effect`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransports: 'invalid' });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransports: 'invalid' });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection({ iceTransports: 'invalid' }) should have no effect`);
+  }, `makePeerConnection(t, { iceTransports: 'invalid' }) should have no effect`);
 
-  test(() => {
-    const pc = new RTCPeerConnection({ iceTransports: null });
+  test(t => {
+    const pc = makePeerConnection(t, { iceTransports: null });
     assert_equals(pc.getConfiguration().iceTransportPolicy, 'all');
-  }, `new RTCPeerConnection({ iceTransports: null }) should have no effect`);
+  }, `makePeerConnection(t, { iceTransports: null }) should have no effect`);
 
 </script>

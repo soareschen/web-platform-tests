@@ -9,13 +9,13 @@
 // a new instance of RTCPeerConnection with given config,
 // either directly as constructor parameter or through setConfiguration.
 function config_test(test_func, desc) {
-  test(() => {
-    test_func(config => new RTCPeerConnection(config));
+  test(t => {
+    test_func(config => makePeerConnection(t, config));
   }, `new RTCPeerConnection(config) - ${desc}`);
 
-  test(() => {
+  test(t => {
     test_func(config => {
-      const pc = new RTCPeerConnection();
+      const pc = makePeerConnection(t);
       assert_idl_attribute(pc, 'setConfiguration');
       pc.setConfiguration(config);
       return pc;

@@ -3,6 +3,7 @@
 <title>RTCConfiguration iceServers</title>
 <script src='/resources/testharness.js'></script>
 <script src='/resources/testharnessreport.js'></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src='RTCConfiguration-helper.js'></script>
 <script>
   'use strict';
@@ -48,10 +49,10 @@
       };
    */
 
-  test(() => {
-    const pc = new RTCPeerConnection();
+  test(t => {
+    const pc = makePeerConnection(t);
     assert_equals(pc.getConfiguration().iceServers, undefined);
-  }, 'new RTCPeerConnection() should have default configuration.iceServers of undefined');
+  }, 'makePeerConnection(t) should have default configuration.iceServers of undefined');
 
   config_test(makePc => {
     assert_throws(new TypeError(), () =>
@@ -139,7 +140,7 @@
   }, `with 2 stun servers should succeed`);
 
   config_test(makePc => {
-    const pc = new RTCPeerConnection({ iceServers: [{
+    const pc = makePc({ iceServers: [{
       urls: 'turn:turn.example.org',
       username: 'user',
       credential: 'cred'

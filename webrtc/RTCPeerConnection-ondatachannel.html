@@ -35,8 +35,8 @@
       };
    */
   async_test(t => {
-    const localPc = new RTCPeerConnection();
-    const remotePc = new RTCPeerConnection();
+    const localPc = makePeerConnection(t);
+    const remotePc = makePeerConnection(t);
 
     let eventCount = 0;
 
@@ -97,8 +97,8 @@
             corresponding values in configuration.
    */
   async_test(t => {
-    const localPc = new RTCPeerConnection();
-    const remotePc = new RTCPeerConnection();
+    const localPc = makePeerConnection(t);
+    const remotePc = makePeerConnection(t);
 
     const onDataChannel = t.step_func_done(event => {
       const remoteChannel = event.channel;
@@ -144,8 +144,8 @@
           same id at the other peer.
    */
   async_test(t => {
-    const localPc = new RTCPeerConnection();
-    const remotePc = new RTCPeerConnection();
+    const localPc = makePeerConnection(t);
+    const remotePc = makePeerConnection(t);
 
     const onDataChannel = t.unreached_func('datachannel event should not be fired');
 

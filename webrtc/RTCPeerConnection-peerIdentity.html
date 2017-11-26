@@ -3,6 +3,7 @@
 <title>RTCPeerConnection.prototype.peerIdentity</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script src="identity-helper.js"></script>
 <script>
   'use strict';
@@ -54,9 +55,9 @@
       is, there is a current value for peerIdentity ), then this also establishes a
       target peer identity.
    */
-  promise_test(() => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+  promise_test(t => {
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -91,8 +92,8 @@
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
 
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection({
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t, {
       peerIdentity: `bob@${idpDomain}`
     });
 
@@ -130,8 +131,8 @@
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
 
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection({
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t, {
       peerIdentity: `alice@${idpDomain}`
     });
 
@@ -166,8 +167,8 @@
 
     const idpHost1 = hostString(idpDomain1, port);
 
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection({
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t, {
       peerIdentity: `alice@${idpDomain2}`
     });
 
@@ -219,8 +220,8 @@
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
 
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection({
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t, {
       peerIdentity: `alice@${idpDomain}`
     });
 
@@ -262,8 +263,8 @@
       a provisional answer) to resolve or reject the identity.
    */
   promise_test(t => {
-    const pc1 = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();

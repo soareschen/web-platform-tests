@@ -3,6 +3,7 @@
 <title>RTCCertificate Tests</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -101,7 +102,7 @@
     }).then(cert => {
       assert_less_than_equal(cert.expires, Date.now());
       assert_throws('InvalidAccessError', () =>
-        new RTCPeerConnection({ certificates: [cert] }));
+        makePeerConnection(t, { certificates: [cert] }));
     });
   }, 'Constructing RTCPeerConnection with expired certificate should reject with InvalidAccessError');
 
@@ -117,7 +118,7 @@
       generateCertificate(),
       generateCertificate()
     ]).then(([cert1, cert2]) => {
-      const pc = new RTCPeerConnection({
+      const pc = makePeerConnection(t, {
         certificates: [cert1]
       });
 
@@ -222,7 +223,7 @@
   promise_test(t => {
     return generateCertificate()
     .then(cert => {
-      const pc = new RTCPeerConnection({
+      const pc = makePeerConnection(t, {
         certificates: [cert]
       });
       pc.createDataChannel('test');
@@ -239,7 +240,7 @@
       generateCertificate(),
       generateCertificate()
     ]).then(certs => {
-      const pc = new RTCPeerConnection({
+      const pc = makePeerConnection(t, {
         certificates: certs
       });
       pc.createDataChannel('test');

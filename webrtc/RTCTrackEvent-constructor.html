@@ -3,6 +3,7 @@
 <title>RTCTrackEvent constructor</title>
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
+<script src="RTCPeerConnection-helper.js"></script>
 <script>
   'use strict';
 
@@ -29,7 +30,7 @@
    */
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
     const { track } = receiver;
@@ -50,7 +51,7 @@
   }, `new RTCTrackEvent() with valid receiver, track, transceiver should succeed`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
     const { track } = receiver;
@@ -70,7 +71,7 @@
   }, `new RTCTrackEvent() with valid receiver, track, streams, transceiver should succeed`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
     const { track } = receiver;
@@ -91,7 +92,7 @@
   }, `new RTCTrackEvent() with valid receiver, track, multiple streams, transceiver should succeed`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const receiver = pc.addTransceiver('audio').receiver;
     const track =  pc.addTransceiver('audio').receiver.track;
@@ -111,7 +112,7 @@
   }, `new RTCTrackEvent() with unrelated receiver, track, streams, transceiver should succeed`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
     const { track } = receiver;
@@ -124,7 +125,7 @@
   }, `new RTCTrackEvent() with no transceiver should throw TypeError`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
 
@@ -136,7 +137,7 @@
   }, `new RTCTrackEvent() with no track should throw TypeError`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
     const { receiver } = transceiver;
     const { track } = receiver;

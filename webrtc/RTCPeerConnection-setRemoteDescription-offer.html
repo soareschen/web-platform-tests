@@ -51,10 +51,10 @@
    */
 
   promise_test(t => {
-    const pc1 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
     pc1.createDataChannel('datachannel');
 
-    const pc2 = new RTCPeerConnection();
+    const pc2 = makePeerConnection(t);
 
     test_state_change_event(t, pc2, ['have-remote-offer']);
 
@@ -71,10 +71,10 @@
    }, 'setRemoteDescription with valid offer should succeed');
 
   promise_test(t => {
-    const pc1 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
     pc1.createDataChannel('datachannel');
 
-    const pc2 = new RTCPeerConnection();
+    const pc2 = makePeerConnection(t);
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);
@@ -93,10 +93,10 @@
   }, 'setRemoteDescription multiple times should succeed');
 
   promise_test(t => {
-    const pc1 = new RTCPeerConnection();
+    const pc1 = makePeerConnection(t);
     pc1.createDataChannel('datachannel');
 
-    const pc2 = new RTCPeerConnection();
+    const pc2 = makePeerConnection(t);
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);
@@ -130,7 +130,7 @@
               error was detected) and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     return pc.setRemoteDescription({
       type: 'offer',
@@ -158,7 +158,7 @@
             "have-remote-offer".
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return pc.createOffer()
     .then(offer => {
       return pc.setLocalDescription(offer)

@@ -79,8 +79,7 @@
         1.  If kind is not a legal MediaStreamTrack kind, throw a TypeError.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'addTransceiver');
     assert_throws(new TypeError(), () => pc.addTransceiver('invalid'));
@@ -126,8 +125,7 @@
         6.  Set transceiver.stopped to false.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'addTransceiver');
 
@@ -172,8 +170,7 @@
   }, `addTransceiver('audio') should return an audio transceiver`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'addTransceiver');
 
@@ -217,24 +214,21 @@
   }, `addTransceiver('video') should return a video transceiver`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     const transceiver = pc.addTransceiver('audio', { direction: 'sendonly' });
     assert_equals(transceiver.direction, 'sendonly');
   }, `addTransceiver() with direction sendonly should have result transceiver.direction be the same`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     const transceiver = pc.addTransceiver('audio', { direction: 'inactive' });
     assert_equals(transceiver.direction, 'inactive');
   }, `addTransceiver() with direction inactive should have result transceiver.direction be the same`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_idl_attribute(pc, 'addTransceiver');
     assert_throws(new TypeError(), () =>
@@ -247,8 +241,7 @@
           kind be track.kind.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     const track = generateMediaStreamTrack('audio');
     const transceiver = pc.addTransceiver(track);
@@ -286,8 +279,7 @@
   }, 'addTransceiver(track) should have result with sender.track be given track');
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     const track = generateMediaStreamTrack('audio');
     const transceiver1 = pc.addTransceiver(track);
@@ -322,9 +314,8 @@
           throw a TypeError.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
-    assert_idl_attribute(pc, 'addTransceiver');
+    const pc = makePeerConnection(t);
+        assert_idl_attribute(pc, 'addTransceiver');
 
     assert_throws(new TypeError(), () =>
       pc.addTransceiver('audio', {
@@ -335,9 +326,8 @@
   }, 'addTransceiver() with rid containing invalid non-alphanumeric characters should throw TypeError');
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
-    assert_idl_attribute(pc, 'addTransceiver');
+    const pc = makePeerConnection(t);
+        assert_idl_attribute(pc, 'addTransceiver');
 
     assert_throws(new TypeError(), () =>
       pc.addTransceiver('audio', {
@@ -348,9 +338,8 @@
   }, 'addTransceiver() with rid longer than 16 characters should throw TypeError');
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
-    pc.addTransceiver('audio', {
+    const pc = makePeerConnection(t);
+        pc.addTransceiver('audio', {
       sendEncodings: [{
         rid: 'foo'
       }]
@@ -368,8 +357,7 @@
         dictionaries, such as ssrc, must be left unset, or an error will be thrown.
    */
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_throws('InvalidAccessError', () =>
       pc.addTransceiver('audio', {
@@ -380,8 +368,7 @@
   }, `addTransceiver() with readonly ssrc set should throw InvalidAccessError`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_throws('InvalidAccessError', () =>
       pc.addTransceiver('audio', {
@@ -394,8 +381,7 @@
   }, `addTransceiver() with readonly rtx set should throw InvalidAccessError`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     assert_throws('InvalidAccessError', () =>
       pc.addTransceiver('audio', {
@@ -408,8 +394,7 @@
   }, `addTransceiver() with readonly fec set should throw InvalidAccessError`);
 
   test(t => {
-    const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
+    const pc = makePeerConnection(t);
 
     pc.addTransceiver('audio', {
       sendEncodings: [{

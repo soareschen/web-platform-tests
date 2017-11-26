@@ -49,7 +49,7 @@
     4.6.1.  enum RTCSdpType
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     // SDP is validated after WebIDL validation
     return promise_rejects(t, new TypeError(),
@@ -60,7 +60,7 @@
   }, 'setRemoteDescription with invalid type and invalid SDP should reject with TypeError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     // SDP is validated after validating type
     return promise_rejects(t, 'InvalidStateError',
@@ -73,8 +73,8 @@
   /* Operations after returning to stable state */
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
-    const pc2 = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
+    const pc2 = makePeerConnection(t);
 
     test_state_change_event(t, pc,
       ['have-remote-offer', 'stable', 'have-remote-offer']);
@@ -98,7 +98,7 @@
   }, 'Calling setRemoteDescription() again after one round of remote-offer/local-answer should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
 
     test_state_change_event(t, pc,
        ['have-local-offer', 'stable', 'have-remote-offer']);

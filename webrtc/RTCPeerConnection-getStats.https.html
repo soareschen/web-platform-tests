@@ -53,13 +53,13 @@
         2.  Resolve p with the resulting RTCStatsReport object, containing the gathered stats.
    */
 
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     return pc.getStats();
   }, 'getStats() with no argument should succeed');
 
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     return pc.getStats(null);
   }, 'getStats(null) should succeed');
 
@@ -70,16 +70,16 @@
           rejected with a newly created InvalidAccessError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
-    return getTrackFromUserMedia('audio')
+    const pc = makePeerConnection(t);
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
       return promise_rejects(t, 'InvalidAccessError', pc.getStats(track));
     });
   }, 'getStats() with track not added to connection should reject with InvalidAccessError');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
-    return getTrackFromUserMedia('audio')
+    const pc = makePeerConnection(t);
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
       pc.addTrack(track, mediaStream);
       return pc.getStats(track);
@@ -87,7 +87,7 @@
   }, 'getStats() with track added via addTrack should succeed');
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const track = generateMediaStreamTrack();
     pc.addTransceiver(track);
 
@@ -101,8 +101,8 @@
           return a promise rejected with a newly created InvalidAccessError.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
-    return getTrackFromUserMedia('audio')
+    const pc = makePeerConnection(t);
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
       // addTransceiver allows adding same track multiple times
       const transceiver1 = pc.addTransceiver(track);
@@ -117,7 +117,7 @@
   }, `getStats() with track associated with more than one sender should reject with InvalidAccessError`);
 
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     const transceiver1 = pc.addTransceiver('audio');
 
     // Create another transceiver that resends what
@@ -134,7 +134,7 @@
           return result, and abort these steps.
    */
   promise_test(t => {
-    const pc = new RTCPeerConnection();
+    const pc = makePeerConnection(t);
     return pc.getStats()
     .then(statsReport => {
       validateStatsReport(statsReport);
@@ -150,9 +150,9 @@
         - All stats objects referenced directly or indirectly by the RTCOutboundRTPStreamStats
           objects added.
    */
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
-    return getTrackFromUserMedia('audio')
+  promise_test(t => {
+    const pc = makePeerConnection(t);
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
       pc.addTrack(track, mediaStream);
 
@@ -173,8 +173,8 @@
         - All stats objects referenced directly or indirectly by the RTCInboundRTPStreamStats
           added.
    */
-  promise_test(() => {
-    const pc = new RTCPeerConnection();
+  promise_test(t => {
+    const pc = makePeerConnection(t);
     const transceiver = pc.addTransceiver('audio');
 
     return pc.getStats(transceiver.receiver.track)
