@@ -270,10 +270,18 @@ function doSignalingHandshake(localPc, remotePc) {
 // It does the heavy lifting of performing signaling handshake,
 // ICE candidate exchange, and waiting for data channel at two
 // end points to open.
-function createDataChannelPair(
-  pc1=new RTCPeerConnection(),
-  pc2=new RTCPeerConnection())
+function createDataChannelPair(t, pc1, pc2)
 {
+  if(!pc1) {
+    pc1 = new RTCPeerConnection()
+    t.add_cleanup(() => pc1.close())
+  }
+
+  if(!pc2) {
+    pc2 = new RTCPeerConnection()
+    t.add_cleanup(() => pc2.close())
+  }
+
   const channel1 = pc1.createDataChannel('');
 
   exchangeIceCandidates(pc1, pc2);
