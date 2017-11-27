@@ -63,6 +63,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     return pc.createOffer()
     .then(offer =>
@@ -80,6 +81,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-local-offer', 'have-remote-pranswer']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
@@ -106,6 +108,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-local-offer', 'have-remote-pranswer']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
@@ -122,6 +125,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-local-offer', 'have-remote-pranswer', 'stable']);
 
     return pc.createOffer({ offerToReceiveVideo: true })

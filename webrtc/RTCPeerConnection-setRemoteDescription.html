@@ -50,6 +50,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     // SDP is validated after WebIDL validation
     return promise_rejects(t, new TypeError(),
@@ -61,6 +62,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     // SDP is validated after validating type
     return promise_rejects(t, 'InvalidStateError',
@@ -74,7 +76,9 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
 
     test_state_change_event(t, pc,
       ['have-remote-offer', 'stable', 'have-remote-offer']);
@@ -99,6 +103,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     test_state_change_event(t, pc,
        ['have-local-offer', 'stable', 'have-remote-offer']);

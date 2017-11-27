@@ -52,9 +52,11 @@
 
   promise_test(t => {
     const pc1 = new RTCPeerConnection();
+    t.add_cleanup(() => pc1.close());
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
 
     test_state_change_event(t, pc2, ['have-remote-offer']);
 
@@ -72,9 +74,11 @@
 
   promise_test(t => {
     const pc1 = new RTCPeerConnection();
+    t.add_cleanup(() => pc1.close());
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);
@@ -94,9 +98,11 @@
 
   promise_test(t => {
     const pc1 = new RTCPeerConnection();
+    t.add_cleanup(() => pc1.close());
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);
@@ -131,6 +137,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     return pc.setRemoteDescription({
       type: 'offer',
@@ -159,6 +166,8 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
+
     return pc.createOffer()
     .then(offer => {
       return pc.setLocalDescription(offer)

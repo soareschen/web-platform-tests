@@ -21,7 +21,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
       const localTrack = tracks[0];
@@ -44,7 +47,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
       const localTrack = tracks[0];
@@ -73,7 +79,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     let eventSequence = '';
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
@@ -101,7 +110,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(2)
     .then(t.step_func(([tracks, streams]) => {
       const localTrack1 = tracks[0];
@@ -143,7 +155,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(2)
     .then(t.step_func(([tracks, streams]) => {
       const localTracks = tracks;
@@ -178,7 +193,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     let eventSequence = '';
     return getUserMediaTracksAndStreams(2)
     .then(t.step_func(([tracks, streams]) => {
@@ -214,7 +232,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(2)
     .then(t.step_func(([tracks, streams]) => {
       const localTrack = tracks[0];
@@ -247,7 +268,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
       caller.addTrack(tracks[0]);
@@ -265,7 +289,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
       const sender = caller.addTrack(tracks[0]);
@@ -292,7 +319,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {
       const sender = caller.addTrack(tracks[0], streams[0]);
@@ -319,7 +349,10 @@
 
   async_test(t => {
     const caller = new RTCPeerConnection();
+    t.add_cleanup(() => caller.close());
     const callee = new RTCPeerConnection();
+    t.add_cleanup(() => callee.close());
+
     let eventSequence = '';
     return getUserMediaTracksAndStreams(1)
     .then(t.step_func(([tracks, streams]) => {

@@ -46,6 +46,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-local-offer', 'stable', 'have-local-offer']);
 
     return pc.createOffer({ offerToReceiveAudio: true })
@@ -70,6 +71,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc,
       ['have-remote-offer', 'stable', 'have-local-offer']);
 
