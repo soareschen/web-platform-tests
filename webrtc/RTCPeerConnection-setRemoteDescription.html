@@ -76,7 +76,6 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
     const pc2 = new RTCPeerConnection();
     t.add_cleanup(() => pc2.close());
 
@@ -103,7 +102,6 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
 
     test_state_change_event(t, pc,
        ['have-local-offer', 'stable', 'have-remote-offer']);

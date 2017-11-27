@@ -181,6 +181,19 @@ function generateAnswer(offer) {
 // test
 function test_state_change_event(parentTest, pc, expectedStates) {
   return async_test(t => {
+    let mainTestEnded = false;
+    let subTestEnded = false;
+
+    parentTest.add_cleanup(() => {
+      mainTestEnded = true;
+      if(subTestEnded) pc.close();
+    });
+
+    t.add_cleanup(() => {
+      subTestEnded = true;
+      if(mainTestEnded) pc.close();
+    });
+
     pc.onsignalingstatechange = t.step_func(() => {
       if(expectedStates.length === 0) {
         return;

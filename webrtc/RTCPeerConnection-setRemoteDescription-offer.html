@@ -56,8 +56,6 @@
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
-    t.add_cleanup(() => pc2.close());
-
     test_state_change_event(t, pc2, ['have-remote-offer']);
 
     return pc1.createOffer()
@@ -78,7 +76,6 @@
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
-    t.add_cleanup(() => pc2.close());
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);
@@ -102,7 +99,6 @@
     pc1.createDataChannel('datachannel');
 
     const pc2 = new RTCPeerConnection();
-    t.add_cleanup(() => pc2.close());
 
     // have-remote-offer event should only fire once
     test_state_change_event(t, pc2, ['have-remote-offer']);

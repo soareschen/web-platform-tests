@@ -61,7 +61,6 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-remote-offer', 'stable']);
 
     return pc.createOffer({ offerToReceiveVideo: true })
