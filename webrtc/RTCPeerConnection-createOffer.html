@@ -44,7 +44,6 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
-    t.add_cleanup(() => pc.close());
     test_state_change_event(t, pc, ['have-local-offer']);
 
     return pc.createOffer({ offerToReceiveAudio: true })

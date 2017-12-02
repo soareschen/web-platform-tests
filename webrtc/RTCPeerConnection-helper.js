@@ -242,7 +242,8 @@ function exchangeIceCandidates(pc1, pc2) {
       // There is ongoing discussion on w3c/webrtc-pc#1213
       // that there should be an empty candidate string event
       // for end of candidate for each m= section.
-      if(candidate) {
+      // If remotePc is closed, it may be due to the test ending prematurely
+      if(candidate && remotePc.signalingState !== 'closed') {
         remotePc.addIceCandidate(candidate);
       }
     });
