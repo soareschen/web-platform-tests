@@ -425,10 +425,10 @@ function getTrackFromUserMedia(t, kind) {
 // resolved with a pair of arrays [tracks, streams].
 // Assumes there is at least one available device to generate the tracks and
 // streams and that the getUserMedia() calls resolve.
-function getUserMediaTracksAndStreams(count, type = 'audio') {
+function getUserMediaTracksAndStreams(t, count, type = 'audio') {
   let otherTracksPromise;
   if (count > 1)
-    otherTracksPromise = getUserMediaTracksAndStreams(count - 1, type);
+    otherTracksPromise = getUserMediaTracksAndStreams(t, count - 1, type);
   else
     otherTracksPromise = Promise.resolve([[], []]);
   return otherTracksPromise.then(([tracks, streams]) => {
