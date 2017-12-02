@@ -53,13 +53,13 @@
         2.  Resolve p with the resulting RTCStatsReport object, containing the gathered stats.
    */
 
-  promise_test(() => {
+  promise_test(t => {
     const pc = new RTCPeerConnection();
     t.add_cleanup(() => pc.close());
     return pc.getStats();
   }, 'getStats() with no argument should succeed');
 
-  promise_test(() => {
+  promise_test(t => {
     const pc = new RTCPeerConnection();
     t.add_cleanup(() => pc.close());
     return pc.getStats(null);
@@ -164,7 +164,7 @@
         - All stats objects referenced directly or indirectly by the RTCOutboundRTPStreamStats
           objects added.
    */
-  promise_test(() => {
+  promise_test(t => {
     const pc = new RTCPeerConnection();
     t.add_cleanup(() => pc.close());
 
@@ -189,7 +189,7 @@
         - All stats objects referenced directly or indirectly by the RTCInboundRTPStreamStats
           added.
    */
-  promise_test(() => {
+  promise_test(t => {
     const pc = new RTCPeerConnection();
     t.add_cleanup(() => pc.close());
 

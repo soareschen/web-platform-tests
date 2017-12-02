@@ -154,7 +154,7 @@
 
       7.  Set the object's toneBuffer attribute to tones.
    */
-  promise_test(() => {
+  promise_test(t => {
     return createDtmfSender(t)
     .then(dtmfSender => {
       dtmfSender.insertDTMF('123');

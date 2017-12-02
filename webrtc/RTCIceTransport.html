@@ -165,7 +165,7 @@
     });
   }, 'Two connected iceTransports should has matching local/remote candidates returned');
 
-  promise_test(() => {
+  promise_test(t => {
     const pc1 = new RTCPeerConnection();
     t.add_cleanup(() => pc1.close());
     const pc2 = new RTCPeerConnection();
