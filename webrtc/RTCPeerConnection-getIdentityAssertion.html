@@ -140,6 +140,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     assert_equals(pc.idpErrorInfo, null,
       'Expect initial pc.idpErrorInfo to be null');
@@ -169,6 +170,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -193,6 +195,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -218,6 +221,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     pc.setIdentityProvider('nonexistent-origin.web-platform.test', {
       protocol: `non-existent`,
@@ -244,6 +248,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     assert_equals(pc.idpLoginUrl, null,
       'Expect initial pc.idpLoginUrl to be null');
@@ -284,6 +289,7 @@
     const pc = new RTCPeerConnection({
       peerIdentity: 'bob@example.net'
     });
+    t.add_cleanup(() => pc.close());
 
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
@@ -306,6 +312,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
     const idpHost = hostString(idpDomain, port);
@@ -334,6 +341,7 @@
 
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -360,6 +368,7 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -382,6 +391,10 @@
    */
   promise_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
+    const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
+
     const port = window.location.port;
     const [idpDomain] = getIdpDomains();
 
@@ -390,8 +403,7 @@
       usernameHint: `alice@${idpDomain}`
     });
 
-    return new RTCPeerConnection()
-    .createOffer()
+    return pc2.createOffer()
     .then(offer => pc.setRemoteDescription(offer))
     .then(() =>
       promise_rejects(t, 'NotReadableError',

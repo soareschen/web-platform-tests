@@ -52,6 +52,7 @@ function createDtmfSender(t, pc) {
 function test_tone_change_events(testFunc, toneChanges, desc) {
   async_test(t => {
     const pc = new RTCPeerConnection();
+    t.add_cleanup(() => pc.close());
 
     createDtmfSender(t, pc)
     .then(dtmfSender => {
@@ -93,7 +94,6 @@ function test_tone_change_events(testFunc, toneChanges, desc) {
           t.step_timeout(
             t.step_func(() => {
               t.done();
-              pc.close();
             }), expectedDuration + 100);
         }
       });

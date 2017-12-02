@@ -412,7 +412,7 @@ function getTrackFromUserMedia(t, kind) {
     assert_greater_than(tracks.length, 0,
       `Expect getUserMedia to return at least one track of kind ${kind}`);
     for (const track of tracks) {
-      t.add_cleanup(() => track.end())
+      t.add_cleanup(() => track.stop())
     }
 
     const [ track ] = tracks;
