@@ -167,7 +167,10 @@
 
   promise_test(() => {
     const pc1 = new RTCPeerConnection();
+    t.add_cleanup(() => pc1.close());
     const pc2 = new RTCPeerConnection();
+    t.add_cleanup(() => pc2.close());
+
     pc1.createDataChannel('');
 
     // setRemoteDescription(answer) without the other peer

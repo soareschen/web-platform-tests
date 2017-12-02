@@ -54,7 +54,7 @@
       });
     });
 
-    return getTrackFromUserMedia('audio')
+    return getTrackFromUserMedia(t, 'audio')
     .then(([track, mediaStream]) => {
        pc1.addTrack(track, mediaStream);
       exchangeIceCandidates(pc1, pc2);

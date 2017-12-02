@@ -432,7 +432,7 @@ function getUserMediaTracksAndStreams(t, count, type = 'audio') {
   else
     otherTracksPromise = Promise.resolve([[], []]);
   return otherTracksPromise.then(([tracks, streams]) => {
-    return getTrackFromUserMedia(type)
+    return getTrackFromUserMedia(t, type)
     .then(([track, stream]) => {
       // Remove the default stream-track relationship.
       stream.removeTrack(track);
